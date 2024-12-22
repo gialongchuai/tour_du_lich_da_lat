@@ -1,0 +1,48 @@
+﻿@{ Layout = "~/Views/Shared/_LayoutPageTest.cshtml"; }
+
+<h2 class="text-center mb-4">Trang Quản Trị</h2>
+
+<div class="alert alert-info text-center">
+    <strong>Thông báo:</strong> Trước khi thực hiện các thao tác, hãy đảm bảo rằng bạn đã sao lưu CSDL trước đó để tránh mất dữ liệu.
+</div>
+
+@if (ViewBag.AdminRole == "Admin") // Kiểm tra vai trò người dùng
+{
+    <div class="mb-4">
+        <!-- Form để sao lưu -->
+        <form method="post" action="/Admin/Backup" class="p-4 border rounded bg-light shadow">
+            <h4 class="mt-2">Nhập đường dẫn và tiến hành sao lưu</h4>
+
+            <div class="form-group">
+                <label for="backupPath">Đường dẫn tham khảo mặc định:</label>
+                <input type="text" id="backupPath" name="backupPath" class="form-control"
+                       value="C:\Users\MSII\Desktop\DB_TourDuLich_Backup.bak" />
+            </div>
+
+            <button type="submit" class="btn btn-success">Sao lưu CSDL</button>
+        </form>
+    </div>
+
+    <div>
+        <!-- Form để phục hồi -->
+        <form method="post" action="/Admin/Restore" enctype="multipart/form-data" class="p-4 border rounded bg-light shadow">
+            <h4 class="mb-3">Phục hồi CSDL từ tệp .bak</h4>
+            <div class="form-group mb-3" style="width: 50%">
+                <label for="restoreFile" class="form-label">Chọn tệp .bak để phục hồi:</label>
+                <input style="border: 1px solid #ccc" type="file" name="restoreFile" accept=".bak" required class="form-control-file" />
+            </div>
+            <button type="submit" class="btn btn-primary">Phục hồi CSDL</button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning mt-4">Bạn không có quyền truy cập vào chức năng này.</div>// Thông báo nếu không phải Admin
+}
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info">@ViewBag.Message</div>
+}
+
+<h2 class="text-center mt-4">Sao lưu và Phục hồi CSDL</h2>

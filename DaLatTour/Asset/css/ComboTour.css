@@ -1,0 +1,108 @@
+﻿/* Đặt tiền tố tour-combo cho các lớp để đảm bảo các lớp chỉ áp dụng cho các thành phần trong trang tour combo */
+.tour-combo .tour-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+}
+
+    .tour-combo .tour-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .tour-combo .tour-card img {
+        border-radius: 10px;
+        max-height: 250px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .tour-combo .tour-card:hover img {
+        transform: scale(1.1);
+    }
+
+    .tour-combo .tour-card h5 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #007bff; /* Tô màu xanh đậm cho tên tour */
+        margin-bottom: 10px;
+        font-weight:bold;
+    }
+
+    .tour-combo .tour-card p {
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #34495e;
+    }
+
+    .tour-combo .tour-card .btn-primary {
+        background-color: #28a745; /* Màu xanh lá đậm */
+        border: none;
+        padding: 10px 25px;
+        border-radius: 30px;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+        .tour-combo .tour-card .btn-primary:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+    .tour-combo .tour-card .price {
+        font-size: 20px;
+        font-weight: bold;
+        color: #e74c3c; /* Màu đỏ cho giá */
+        margin-bottom: 10px;
+    }
+
+    .tour-combo .tour-card .hotel-restaurant p {
+        margin-bottom: 5px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #7f8c8d;
+    }
+
+    .tour-combo .tour-card ul {
+        padding-left: 15px;
+        list-style-type: disc;
+        font-size: 16px;
+        color: #555;
+    }
+
+        .tour-combo .tour-card ul li {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+
+.tour-combo .container-fluid {
+    padding: 40px 20px;
+    background-color: #f1f2f6;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .tour-combo .tour-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .tour-combo .tour-card img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .tour-combo .tour-card .col-md-2,
+        .tour-combo .tour-card .col-md-6 {
+            text-align: center;
+        }
+}

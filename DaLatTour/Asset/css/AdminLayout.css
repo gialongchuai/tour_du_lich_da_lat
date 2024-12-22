@@ -1,0 +1,205 @@
+﻿/* Global Styles */
+body {
+    font-family: 'Heebo', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background-color: #343a40;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+    .sidebar h2 {
+        border-bottom: 2px solid #495057;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .sidebar a {
+        text-decoration: none;
+        transition: background-color 0.3s, padding-left 0.3s;
+        color: darkseagreen !important;
+        display: block;
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+        .sidebar a:hover {
+            background-color: #17a2b8;
+            padding-left: 25px;
+            color: #fff !important;
+        }
+
+/* Header Styles */
+.header {
+    background-color: #fff;
+    color: #333;
+    border-bottom: 1px solid #eaeaea;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px 30px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 280px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 60px;
+}
+
+    .header a {
+        color: #333 !important;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .header a:hover {
+            color: #007bff !important;
+        }
+
+    .header .dropdown-menu {
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        right: 0;
+        left: auto;
+    }
+
+/* Content Styles */
+.content {
+    margin-left: 280px;
+    margin-top: 60px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+/* Submenu Animation */
+.submenu {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.5s ease-out;
+}
+
+    .submenu.open {
+        max-height: 300px;
+    }
+
+hr {
+    border: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+    }
+
+    .header {
+        left: 0;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .content {
+        margin-left: 0;
+        margin-top: 80px;
+    }
+}
+
+/* Additional styles for mobile sidebar toggling */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+    .toggle-sidebar-btn {
+        display: block;
+        background-color: #343a40;
+        color: white;
+        padding: 10px;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+        cursor: pointer;
+    }
+
+    .header {
+        left: 0;
+        right: 0;
+    }
+
+    .content {
+        margin-top: 80px;
+    }
+}
+.header .dropdown-toggle {
+    background-color: transparent;
+    color: #333; 
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none; 
+    border-radius: 0;
+    cursor: pointer;
+    transition: color 0.3s, box-shadow 0.3s; /* Chỉ hiệu ứng màu và bóng */
+}
+
+    .header .dropdown-toggle:hover {
+        color: #007bff; /* Màu chữ đổi khi hover */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bóng nhẹ khi hover */
+    }
+
+.header .dropdown-menu {
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    right: 0;
+    left: auto;
+    min-width: 150px;
+    border-radius: 8px;
+    padding: 8px 0;
+}
+
+.header .dropdown-item {
+    padding: 10px;
+    color: #333; /* Màu chữ mặc định */
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 4px;
+}
+
+    .header .dropdown-item:hover {
+        background-color: #007bff !important;
+        color: #ffffff !important;
+    }
+
+

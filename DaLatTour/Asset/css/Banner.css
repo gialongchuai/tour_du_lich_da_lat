@@ -1,0 +1,114 @@
+﻿/* Container của banner */
+.banner-container {
+    padding: 20px 0;
+    background-color: #f8f9fa;
+}
+
+/* Ảnh trong Carousel */
+.carousel-inner img {
+    border-radius: 15px; /* Bo tròn góc ảnh */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Hiệu ứng đổ bóng */
+    transition: transform 0.5s ease, box-shadow 0.5s ease; /* Hiệu ứng chuyển mượt */
+    object-fit: contain; /* Đảm bảo ảnh vừa với khung mà không bị crop */
+    max-height: 500px; /* Chiều cao tối đa của ảnh */
+    width: 100%; /* Chiều rộng của ảnh vừa với khung */
+}
+
+    /* Hiệu ứng khi di chuột vào ảnh */
+    .carousel-inner img:hover {
+        transform: scale(1.02); /* Phóng to ảnh một chút khi di chuột vào */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Tăng hiệu ứng đổ bóng khi di chuột vào */
+    }
+
+/* Tùy chỉnh nút điều khiển của Carousel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5); /* Tạo màu nền đen mờ cho biểu tượng điều khiển */
+    border-radius: 50%; /* Bo tròn nút điều khiển */
+    padding: 10px; /* Tăng kích thước để dễ nhấn */
+    transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu mượt */
+}
+
+    .carousel-control-prev-icon:hover,
+    .carousel-control-next-icon:hover {
+        background-color: rgba(0, 0, 0, 0.8); /* Đổi màu nền khi di chuột vào nút điều khiển */
+    }
+
+
+/* Process Section Styling */
+.process-section {
+    padding: 50px 0;
+    background-color: #f9f9f9;
+}
+
+    .process-section h6 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .process-section h1 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 40px;
+        color: #333;
+    }
+
+.position-relative.border {
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+    .position-relative.border:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+.bg-primary.rounded-circle {
+    width: 120px;
+    height: 120px;
+    transition: transform 0.3s ease;
+}
+
+    .bg-primary.rounded-circle:hover {
+        transform: rotate(360deg);
+    }
+
+.mt-4 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.process-section p {
+    font-size: 16px;
+    color: #666;
+    margin-top: 15px;
+}
+
+.process-section .border-primary {
+    border-width: 2px !important;
+}
+
+    /* Small shadow on hover */
+    .process-section .border-primary:hover .bg-primary {
+        background-color: #6ca40f;
+    }
+
+.process-section hr {
+    margin: 10px 0;
+    background-color: var(--primary);
+    height: 2px;
+}
+
+@media (max-width: 767px) {
+    .process-section h1 {
+        font-size: 28px;
+    }
+
+    .position-relative.border {
+        margin-bottom: 30px;
+    }
+}

@@ -1,0 +1,188 @@
+﻿@{
+    Layout = "~/Views/Shared/TourComboLayout.cshtml";
+}
+@model DaLatTour.Models.BookingComboModel
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Nhập Thông Tin Đặt Tour</h2>
+
+    <form id="bookingForm" method="post" action="@Url.Action("CreateBooking", "TourCombo")">
+        <!-- Tour hoặc Combo ID -->
+        @Html.HiddenFor(m => m.TourId)
+        @Html.HiddenFor(m => m.ComboId)
+
+        <!-- Ngày khởi hành -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <p><strong>Ngày khởi hành:</strong> @Model.DepartureDate</p>
+                <input type="hidden" name="DepartureDate" value="@Model.DepartureDate" />
+            </div>
+            <div class="col-md-6">
+                <p><strong>Giá ban đầu:</strong> <span id="basePrice">
+    @Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("vi-VN")).Replace("₫", "VND")
+            </span></p>
+                <input type="hidden" id="hiddenTotalPrice" name="TotalPrice" value="@Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("vi-VN")).Replace("₫", "VND")" />
+            </div>
+        </div>
+
+        <!-- Tên khách hàng -->
+        <div class="form-group mb-3">
+            <label for="CustomerName" class="form-label">Tên khách hàng:</label>
+            @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", required = "required", placeholder = "Nhập tên của bạn" })
+            @Html.ValidationMessageFor(m => m.CustomerName, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Số điện thoại -->
+        <div class="form-group mb-3">
+            <label for="PhoneNumber" class="form-label">Số điện thoại:</label>
+            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", type = "tel", required = "required", placeholder = "Nhập số điện thoại của bạn" })
+            @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Email -->
+        <div class="form-group mb-3">
+            <label for="Email" class="form-label">Email:</label>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", required = "required", placeholder = "Nhập email của bạn" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Số người tham gia -->
+        <div class="form-group mb-3">
+            <label for="NumPeople">Số người tham gia:</label>
+            @Html.TextBoxFor(m => m.NumPeople, new { @class = "form-control", type = "number", min = "1", required = "required" })
+            @Html.ValidationMessageFor(m => m.NumPeople, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Yêu cầu đặc biệt -->
+        <div class="form-group mb-3">
+            <label for="SpecialRequests" class="form-label">Yêu cầu đặc biệt:</label>
+            @Html.TextAreaFor(m => m.SpecialRequests, new { @class = "form-control", rows = 4, placeholder = "Nhập các yêu cầu đặc biệt (nếu có)" })
+            @Html.ValidationMessageFor(m => m.SpecialRequests, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Lựa chọn phương thức thanh toán -->
+        <div class="form-group mb-4">
+
+            <label for="PaymentMethod" class="form-label">Phương thức thanh toán:</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="cash" value="Cash" required>
+                <label class="form-check-label" for="cash">
+                    Tiền mặt
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="bankTransfer" value="Bank_Transfer" required>
+                <label class="form-check-label" for="bankTransfer">
+                    Chuyển khoản
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="momo" value="MoMo" required>
+                <label class="form-check-label" for="momo">Thanh toán MoMo</label>
+            </div>
+
+            @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Nút Đặt Tour -->
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary btn-lg">Đặt Tour</button>
+        </div>
+    </form>
+</div>
+
+<!-- Modal yêu cầu đăng nhập -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Yêu cầu đăng nhập</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn cần đăng nhập để tiếp tục thực hiện đặt tour. Vui lòng đăng nhập hoặc tạo tài khoản nếu chưa có.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Đăng nhập</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thông báo hết chỗ -->
+<div class="modal fade" id="slotErrorModal" tabindex="-1" aria-labelledby="slotErrorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="slotErrorModalLabel">Thông báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Số lượng người tham gia bạn chọn vượt quá số chỗ trống còn lại. Hiện chỉ còn <strong>@ViewBag.RemainingSlots</strong> chỗ trống. Vui lòng nhập số lượng ít hơn hoặc bạn có thể chọn gói tour khác.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Sự kiện tính lại tổng giá khi người dùng nhập số lượng người tham gia
+        document.getElementById("NumPeople").addEventListener("input", function() {
+            const basePrice = parseFloat('@Model.TotalPrice'); // Lấy giá cơ bản từ Razor
+            const numPeople = parseInt(this.value); // Số người tham gia
+
+            if (isNaN(numPeople) || numPeople <= 0) {
+                document.getElementById("basePrice").textContent = "0";
+                document.getElementById("hiddenTotalPrice").value = 0; // Cập nhật giá trị HiddenFor
+                return;
+            }
+
+            // Tính lại tổng giá
+            const totalPrice = basePrice * numPeople;
+
+            // Hiển thị tổng giá mới
+            document.getElementById("basePrice").textContent = totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }).replace('₫', 'VND');
+
+            // Cập nhật giá trị của HiddenFor để gửi về server
+            document.getElementById("hiddenTotalPrice").value = totalPrice;
+        });
+
+        // Sự kiện xử lý khi người dùng nhấn nút đặt tour
+        document.getElementById("bookingForm").addEventListener("submit", function(event) {
+            var isLoggedIn = @Html.Raw(ViewBag.IsLoggedIn?.ToString().ToLower() ?? "false");
+            var remainingSlots = parseInt('@ViewBag.RemainingSlots' || "0");
+            var numPeople = parseInt(document.getElementById('NumPeople').value);
+
+            if (!isLoggedIn) {
+                // Hiển thị modal yêu cầu đăng nhập
+                $('#loginModal').modal('show');
+                event.preventDefault(); // Ngăn không cho form gửi đi
+                return;
+            }
+
+            // Kiểm tra nếu số người tham gia vượt quá số chỗ trống
+            if (numPeople > remainingSlots) {
+                // Hiển thị modal thông báo hết chỗ
+                $('#slotErrorModal').modal('show');
+                event.preventDefault(); // Ngăn không cho form gửi đi
+                return;
+            }
+
+            // Kiểm tra xem phương thức thanh toán đã được chọn chưa
+            var selectedPaymentMethod = document.querySelector('input[name="PaymentMethod"]:checked');
+            if (!selectedPaymentMethod) {
+                alert("Vui lòng chọn phương thức thanh toán.");
+                event.preventDefault(); // Ngăn không cho form gửi đi nếu chưa chọn phương thức thanh toán
+                return;
+            }
+
+            // Nếu hợp lệ, cho phép form được gửi đi
+        });
+    });
+</script>

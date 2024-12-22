@@ -1,0 +1,185 @@
+﻿@{
+    Layout = "~/Views/Shared/TourComboLayout.cshtml";
+}
+@{
+    ViewBag.Title = "Chi Tiết Combo Tour";
+    var departureDates = ViewBag.DepartureDates as List<DateTime>;
+}
+
+@model DaLatTour.Models.TourComboModel
+
+<div class="container-fluid" style="padding: 20px; background-color: #f8f9fa;">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="tour-card mb-4 p-3" style="background-color: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                <!-- Main image section -->
+                <div class="main-image-container text-center mb-3">
+                    <img id="mainImage" src="@Url.Content("~/Asset/img/" + Model.img_url)" alt="@Model.combo_name"
+                         class="img-fluid"
+                         style="width: 100%; height: 800px; object-fit: cover;" />
+                </div>
+
+                <!-- Additional images (thumbnail) -->
+                <div class="additional-images d-flex justify-content-center mb-3">
+                    @foreach (var img in Model.additional_imgs)
+                    {
+                        <div class="thumbnail-wrapper" style="margin: 0 5px;">
+                            <img src="@Url.Content("~/Asset/img/" + img)" alt="Additional Image" class="img-thumbnail" style="width: 120px; height: 90px; object-fit: cover; cursor: pointer;"
+                                 onclick="changeMainImage('@Url.Content("~/Asset/img/" + img)')" />
+                        </div>
+                    }
+                </div>
+
+                <!-- Tour details section -->
+                <div class="details mt-4">
+                    <h4 style="font-weight: bold; text-align: center;">@Model.combo_name</h4>
+
+                    <div class="description mb-3">
+                        <p>@Html.Raw(Model.description.Replace(Environment.NewLine, "<br />"))</p>
+                    </div>
+
+
+                    @if (!string.IsNullOrEmpty(Model.hotel_name))
+                    {
+                        <p><strong>Khách sạn:</strong> @Model.hotel_name</p>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.restaurant_name))
+                    {
+                        <p><strong>Nhà hàng:</strong> @Model.restaurant_name</p>
+                    }
+
+
+                    <!-- Hiển thị số chỗ còn trống -->
+                    <p>
+                        <strong>Số chỗ còn trống:</strong>
+                        <span style="color: @(Model.RemainingSlots > 0 ? "green" : "red")">
+                            @Model.RemainingSlots
+                        </span>
+                    </p>
+
+                    <!-- Additional services section -->
+                    <div class="services mt-4">
+                        <h5 style="font-weight: bold;">Dịch vụ Bao Gồm</h5>
+                        <ul class="list-unstyled">
+                            @if (Model.services != null && Model.services.Count > 0)
+                            {
+                                foreach (var service in Model.services)
+                                {
+                                    <li><strong>@service.service_name:</strong> @service.description</li>
+                                }
+                            }
+                            else
+                            {
+                                <li>Không có dịch vụ bổ sung</li>
+                            }
+                        </ul>
+                    </div>
+
+                    <!-- Nút mở modal -->
+                    <div class="actions mt-4 text-center">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#departureDateModal">
+                            Chọn ngày khởi hành
+                        </button>
+                        <a href="tel:123" class="btn btn-outline-secondary">Gọi miễn phí qua internet</a>
+                        <a href="#" class="btn btn-outline-secondary">Liên hệ tư vấn</a>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal để chọn ngày khởi hành -->
+<div class="modal fade" id="departureDateModal" tabindex="-1" aria-labelledby="departureDateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="departureDateModalLabel">Chọn Ngày Khởi Hành</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="calendar">
+                    <div class="row">
+                        @if (ViewBag.DepartureDates != null && ViewBag.DepartureDates.Count > 0)
+                        {
+                            foreach (var date in ViewBag.DepartureDates)
+                            {
+                                var formattedDate = date.DepartureDate.ToString("dd/MM/yyyy");
+                                var price = date.Price;
+                                var remainingSlots = date.RemainingSlots;
+
+                                <div class="col-md-3 mb-3 text-center">
+                                    @if (remainingSlots > 0)
+                                    {
+                                        <button type="button" class="btn btn-light" data-day="@formattedDate" data-price="@price">
+                                            @formattedDate <br /> Giá: @price.ToString("C", new System.Globalization.CultureInfo("vi-VN")).Replace("₫", "VND") <br /> Số chỗ còn lại: @remainingSlots
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-secondary" disabled>
+                                            @formattedDate <br /> Hết chỗ
+                                        </button>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-center">Không có ngày khởi hành nào sẵn có.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- JavaScript for changing main image on click -->
+<script>
+    function changeMainImage(src) {
+        document.getElementById('mainImage').src = src;
+    }
+</script>
+<!-- JavaScript to handle day selection -->
+<script>
+    document.querySelectorAll('.calendar .btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const selectedDay = this.getAttribute('data-day');
+            const selectedPrice = this.getAttribute('data-price');
+            const comboId = '@Model.combo_id';  // Razor sẽ được xử lý trước khi JavaScript chạy
+
+            // Remove 'btn-primary' class from all buttons and add 'btn-light'
+            document.querySelectorAll('.calendar .btn').forEach(function (btn) {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-light');
+            });
+
+            // Set the clicked button as active (highlighted)
+            this.classList.remove('btn-light');
+            this.classList.add('btn-primary');
+
+            // Encode URI components to prevent issues with special characters in URL
+            const encodedDay = encodeURIComponent(selectedDay);
+            const encodedPrice = encodeURIComponent(selectedPrice);
+
+            // Chuyển hướng đến trang EnterInfo với các thông tin comboId, ngày và giá đã chọn
+            window.location.href = `/TourCombo/CreateBooking?comboId=${comboId}&departureDate=${encodedDay}&price=${encodedPrice}`;
+        });
+    });
+
+
+
+
+</script>
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<link href="~/Asset/css/ComboTourDetail.css" rel="stylesheet" />

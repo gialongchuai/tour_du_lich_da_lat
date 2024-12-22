@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Views/Shared/TourComboLayout.cshtml";
+}
+@model DaLatTour.Models.BookingWishlistModel
+<div class="booking-confirmation">
+    <div class="container">
+        <p class="text-center">Cảm ơn bạn, <strong>@Model.CustomerName</strong>, đã đặt tour với chúng tôi!</p>
+
+        <p class="text-center">Thông tin chi tiết về đặt tour đã được gửi tới email của bạn: <strong>@Model.Email</strong>. Vui lòng kiểm tra hộp thư (bao gồm cả thư mục spam).</p>
+        <!-- Nội dung khác -->
+        <div class="text-center">
+            <a href="@Url.Action("Index", "Tour")" class="btn btn-primary">Quay lại trang chủ</a>
+        </div>
+    </div>
+</div>
+
+
+<link href="~/Asset/css/BookingConfirm.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">

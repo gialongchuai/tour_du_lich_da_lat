@@ -1,0 +1,54 @@
+﻿.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn-lg {
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+.text-danger {
+    color: #e74c3c;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+small {
+    display: block;
+    margin-top: 5px;
+    color: #6c757d;
+}

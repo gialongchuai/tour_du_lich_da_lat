@@ -1,0 +1,322 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPage2.cshtml";
+}
+@model IEnumerable<DaLatTour.Models.TourReview>
+
+
+
+@{
+    // Nhóm các review theo tour_id
+    var groupedReviews = Model.GroupBy(r => new { r.Tour.tour_id, r.Tour.tour_name, r.Tour.tour_image });
+}
+
+@section Scripts {
+    <script src="~/Scripts/TourReview.js"></script>
+}
+
+<div class="review-header position-relative mb-5">
+    <h2 class="text-center display-4 fw-bold mb-4">Nhận Xét và Đánh Giá Tour</h2>
+    <div class="text-center">
+        <button class="btn btn-review-custom mt-5" id="addReviewButton">
+            <i class="bi bi-star-fill me-2"></i>
+            Đánh giá tour của chúng tôi
+            <div class="button-effect"></div>
+        </button>
+    </div>
+</div>
+
+<!-- Modal thêm đánh giá -->
+<div class="modal fade" id="addReviewModal" tabindex="-1" role="dialog" aria-labelledby="addReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addReviewModalLabel">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Thêm Đánh Giá cho Tour
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addReviewForm">
+                    <div class="form-group mb-4">
+                        <label for="tourSelect" class="form-label fw-bold">Tên Tour</label>
+                        <select class="form-select form-select-lg" id="tourSelect" required>
+                            <option value="">Chọn tour</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="tourImage" class="form-label fw-bold">Hình Ảnh Tour</label>
+                        <img id="tourImage" src="" alt="Tour Image" class="img-fluid rounded shadow-sm" style="max-height: 200px; display: none;" />
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="ratingSelect" class="form-label fw-bold">Đánh Giá</label>
+                        <div class="rating-select">
+                            <select class="form-select form-select-lg" id="ratingSelect" required>
+                                <option value="">Chọn đánh giá</option>
+                                <option value="5">⭐⭐⭐⭐⭐ Xuất sắc</option>
+                                <option value="4">⭐⭐⭐⭐ Rất tốt</option>
+                                <option value="3">⭐⭐⭐ Tốt</option>
+                                <option value="2">⭐⭐ Bình thường</option>
+                                <option value="1">⭐ Cần cải thiện</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="reviewText" class="form-label fw-bold">Nhận Xét</label>
+                        <textarea class="form-control" id="reviewText" rows="4"
+                                  placeholder="Chia sẻ trải nghiệm của bạn về tour này..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Hủy
+                </button>
+                <button type="button" class="btn btn-primary" id="saveReview">
+                    <i class="bi bi-check-circle me-2"></i>Lưu Đánh Giá
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container py-5">
+    <div class="row g-4">
+        @foreach (var tourGroup in groupedReviews)
+        {
+            var averageRating = tourGroup.Average(r => r.rating);
+
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="~/Asset/img/@tourGroup.Key.tour_image.ToString()"
+                                 class="img-fluid rounded-start h-100 w-100 object-fit-cover"
+                                 alt="Tour Image"
+                                 style="max-height: 300px;">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="card-title text-primary mb-0">@tourGroup.Key.tour_name</h4>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-2">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= Math.Round(averageRating))
+                                                {
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-star text-warning"></i>
+                                                }
+                                            }
+                                        </div>
+                                        <span class="text-muted">(@tourGroup.Count() đánh giá)</span>
+                                    </div>
+                                </div>
+
+                                <div class="review-list">
+                                    @foreach (var review in tourGroup)
+                                    {
+                                        <div class="review-item border-bottom pb-3 mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-3">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            if (i <= review.rating)
+                                                            {
+                                                                <i class="bi bi-star-fill text-warning"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="bi bi-star text-warning"></i>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <strong class="text-primary">@review.Customer.name</strong>
+                                                </div>
+                                                <small class="text-muted">
+                                                    @review.review_date.ToString("MMM dd, yyyy")
+                                                </small>
+                                            </div>
+                                            <p class="mb-0">@review.review_text</p>
+                                        </div>
+                                    }
+                                </div>
+
+                                @if (tourGroup.Count() > 5)
+                                {
+                                    <div class="text-center mt-3">
+                                        <button class="btn btn-outline-primary btn-sm">Xem tất cả đánh giá</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .object-fit-cover {
+        object-fit: cover;
+    }
+
+    .review-item:last-child {
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .bi {
+        font-size: 1rem;
+    }
+
+    .review-list {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+        .review-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .review-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .review-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+    .btn-review-custom {
+        position: relative;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        background: linear-gradient(45deg, #2196F3, #1976D2);
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .btn-review-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+            color: white;
+        }
+
+        .btn-review-custom:active {
+            transform: translateY(1px);
+        }
+
+    .button-effect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+    }
+
+    .btn-review-custom:hover .button-effect {
+        transform: translateX(100%);
+    }
+
+    /* Enhanced Modal Styles */
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        border-bottom: none;
+        padding: 1.5rem;
+    }
+
+    .form-control, .form-select {
+        padding: 0.8rem;
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #2196F3;
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+        }
+
+    /* Review Cards Enhancement */
+    .card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+        }
+
+    .review-list {
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+        .review-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .review-list::-webkit-scrollbar-track {
+            background: #f8f9fa;
+            border-radius: 3px;
+        }
+
+        .review-list::-webkit-scrollbar-thumb {
+            background: #2196F3;
+            border-radius: 3px;
+        }
+
+    .review-item {
+        transition: all 0.2s ease;
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+        .review-item:hover {
+            background-color: #f8f9fa;
+        }
+
+    .bi {
+        font-size: 1rem;
+    }
+
+    /* Animation for the header */
+    .review-header {
+        animation: fadeInDown 0.8s ease-out;
+    }
+</style>

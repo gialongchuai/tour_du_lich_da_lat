@@ -1,0 +1,105 @@
+﻿@model DaLatTour.Models.TourDetail
+
+@{
+    Layout = "~/Views/Shared/_LayoutPage2.cshtml";
+}
+<div class="container-xxl py-5" style="border: 2px solid #000; border-radius: 10px;">
+    <div class="container">
+        <!-- Thông tin chi tiết Tour -->
+        <div class="row">
+            <!-- Cột bên trái: Thông tin tour -->
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span class="fs-4 me-2">0 <i class="fas fa-star text-warning"></i></span>
+                        <span>0 Đánh giá</span>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary py-3 px-5 mt-3" data-bs-toggle="modal" data-bs-target="#bookingModal">Đặt TOUR</button>
+                    </div>
+                </div>
+
+                <h2 class="text-danger fw-bold mb-4">@Model.Tour.price.ToString("C")</h2>
+
+                <!-- Lịch trình và chi tiết -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><i class="fas fa-map-marker-alt me-2"></i>Mô tả chuyến đi: @Model.Tour.description</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><i class="fas fa-calendar-alt me-2"></i>Ngày đi: @Model.departure_date.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><i class="fas fa-calendar-alt me-2"></i>Ngày về: @Model.return_date.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+
+                <!-- Form Để lại thông tin -->
+                <div class="bg-warning p-3 rounded">
+                    <h5 class="fw-bold text-center mb-3 text-danger">
+                        QUÝ KHÁCH ĐỂ LẠI THÔNG TIN, VIETNAM TOURIST SẼ GỌI LẠI TƯ VẤN NGAY!
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" placeholder="Họ tên" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="text" class="form-control" placeholder="Số điện thoại" required>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary px-5">Gọi lại cho tôi</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột bên phải: Hình ảnh tour -->
+            <div class="col-lg-4">
+                <img src="~/Asset/img/@Model.Tour.tour_image" class="img-fluid rounded mb-4" alt="Tour Image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Form -->
+<div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingModalLabel">Đặt Tour</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="bookingForm" method="post" action="/Tour/Confirmation">
+                    <div class="mb-3">
+                        <label for="numPeople" class="form-label">Số người tham gia</label>
+                        <input type="number" class="form-control" id="numPeople" name="num_people" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="specialRequests" class="form-label">Yêu cầu đặc biệt</label>
+                        <textarea class="form-control" id="specialRequests" name="special_requests" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentMethod" class="form-label">Phương thức thanh toán</label>
+                        <select class="form-control" id="paymentMethod" name="payment_method" required>
+                            <option value="cash">Tiền mặt</option>
+                            <option value="bank_transfer">Chuyển khoản</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="tour_id" value="@Model.Tour.tour_id">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Đặt tour</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/bootstrap.bundle.min.js"></script>

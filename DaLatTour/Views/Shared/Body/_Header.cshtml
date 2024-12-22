@@ -1,0 +1,210 @@
+﻿
+<div class="header">
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark px-5 d-none d-lg-block">
+        <div class="row gx-0">
+            <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <small class="me-3 text-light"><i class="fa fa-map-marker-alt me-2"></i>140 Lê Trọng Tấn</small>
+                    <small class="me-3 text-light"><i class="fa fa-phone-alt me-2"></i>1900 000 000</small>
+                    <small class="text-light"><i class="fa fa-envelope-open me-2"></i>dalattour@gmail.com</small>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <div class="d-inline-flex align-items-center" style="height: 45px;">
+                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href="#"><i class="fab fa-twitter fw-normal"></i></a>
+                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href="#"><i class="fab fa-facebook-f fw-normal"></i></a>
+                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href="#"><i class="fab fa-linkedin-in fw-normal"></i></a>
+                    <a class="btn btn-sm btn-outline-light btn-sm-square me-2" href="#"><i class="fab fa-instagram fw-normal"></i></a>
+                    <a class="btn btn-sm btn-outline-light btn-sm-square" href="#"><i class="fab fa-youtube fw-normal"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+    <!-- Navigation Bar Start -->
+    <div class="container-fluid position-relative p-0">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light px-4 px-lg-5 py-3 py-lg-0">
+            <a href="@Url.Action("TopRated", "Tour")" class="navbar-brand p-0">
+                <h1 class="text-primary m-0"><i class="fa fa-map-marker-alt me-3"></i>DaLat Discovery</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto py-0">
+                    <a href="@Url.Action("TopRated", "Tour")" class="nav-item nav-link @(ViewContext.RouteData.Values["action"].ToString() == "TopRated" ? "active" : "")">Trang Chủ</a>
+                    <a href="#" class="nav-item nav-link">Về Chúng Tôi</a>
+                    <a href="@Url.Action("Index", "Tour")" class="nav-item nav-link @(ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")">Danh sách Tour</a>
+                    <a href="@Url.Action("TourCombo", "TourCombo")" class="nav-item nav-link">Combo Trọn Gói</a>
+                    <a href="@Url.Action("TourReview", "Tour")" class="nav-item nav-link">Bình Luận</a>
+                    <a href="@Url.Action("TourWishlist", "TourWishlist")" class="nav-item nav-link @(ViewContext.RouteData.Values["action"].ToString() == "TourWishlist" ? "active" : "")">Tour khách đoàn</a>
+                </div>
+                @if (Session["UserName"] != null)
+                {
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Xin Chào! @Session["UserName"]
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <!-- Link mở modal đổi mật khẩu -->
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Đổi mật khẩu</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("TourHistory", "Tour")">Lịch sử đặt tour</a></li>
+                            <li><a class="dropdown-item" href="@Url.Action("Logout", "Auth")">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a href="#" class="btn btn-primary rounded-pill py-2 px-4" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng Nhập</a>
+                        </li>
+                    </ul>
+                }
+
+
+            </div>
+        </nav>
+    </div>
+    <!-- Navigation Bar End -->
+</div>
+
+<!-- Modal Đăng Nhập -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Đăng Nhập</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert d-none" id="loginMessage" role="alert"></div> <!-- Thêm phần này để hiển thị thông báo -->
+
+                <form id="loginForm" method="post" action="@Url.Action("Login", "Auth")">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Tên Đăng Nhập</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật Khẩu</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" data-bs-dismiss="modal">Quên mật khẩu?</a>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Đăng Nhập</button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3">
+                    <span>Bạn chưa có tài khoản? </span>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Đăng Ký</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Quên Mật Khẩu -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Quên Mật Khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="forgotPasswordForm" method="post" action="@Url.Action("ForgotPassword", "Auth")">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Gửi Yêu Cầu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Đăng Ký -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Đăng Ký Tài Khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="registerMessage" class="alert d-none" role="alert"></div> <!-- Thêm div cho thông báo -->
+
+                <form id="registerForm" method="post" action="@Url.Action("Register", "Auth")">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Tên Khách Hàng</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Tên Đăng Nhập</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật Khẩu</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Đăng Ký</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Đổi Mật Khẩu -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Đổi Mật Khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm" method="post" action="@Url.Action("ChangePassword", "Auth")">
+                    <div class="mb-3">
+                        <label for="oldPassword" class="form-label">Mật khẩu cũ</label>
+                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmNewPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                        <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" required>
+                    </div>
+                    <div id="passwordChangeMessage" class="alert d-none" role="alert"></div> <!-- Thông báo kết quả -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

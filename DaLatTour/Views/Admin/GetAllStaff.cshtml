@@ -1,0 +1,158 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPageTest.cshtml";
+}
+
+@section Scripts {
+    <script src="~/Scripts/StaffMn.js"></script>
+}
+
+@model IEnumerable<DaLatTour.Staff>
+
+<h2 style="font-weight: bold; text-align: center">
+    Danh Sách Nhân Viên
+</h2>
+<p style="padding: 20px 0px 0px 20px; font-size: 25px; margin-top: 8px">Tìm kiếm nhân viên:</p>
+
+<div class="row mb-2">
+    <div class="col-md-4" style="padding: 0px 10px 0px 30px">
+        <input type="text" class="form-control" id="searchStaff" placeholder="Nhập nội dung để tìm kiếm" />
+    </div>
+    <div class="col-md-2" style="padding: 0px 10px 0px 5px">
+        <button class="btn btn-primary" id="searchStaffButton">Tìm kiếm</button>
+    </div>
+    <div class="col-md-6 text-right">
+        @if (ViewBag.AdminRole == "Admin")
+        {
+            <button class="btn btn-success float-right" data-toggle="modal" data-target="#addStaffModal">Thêm Nhân Viên</button>
+            <button class="btn btn-primary float-right mr-2" id="editStaffButton" disabled>Sửa</button>
+            <button class="btn btn-danger float-right mr-2" id="deleteStaffButton" disabled>Xóa</button>
+        }
+    </div>
+</div>
+
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col" class="text-center">Chọn</th>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">Tên</th>
+            <th scope="col" class="text-center">Email</th>
+            <th scope="col" class="text-center">Số Điện Thoại</th>
+            <th scope="col" class="text-center">Vai Trò</th>
+            <th scope="col" class="text-center">Mật Khẩu</th>
+            <th scope="col" class="text-center">Ngày Tạo Tài Khoản</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var staff in Model)
+        {
+            <tr>
+                <td class="text-center"><input type="radio" name="selectedStaff" class="staffRadio" value="@staff.staff_id"></td>
+                <th scope="row" class="text-center">@staff.staff_id</th>
+                <td class="text-center">@staff.name</td>
+                <td class="text-center">@staff.email</td>
+                <td class="text-center">@staff.phone</td>
+                <td class="text-center">@staff.role</td>
+                <td class="text-center">******</td>
+                <td class="text-center">@Html.DisplayFor(modelItem => staff.created_at, new { @class = "date-format" })</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal thêm nhân viên -->
+<div class="modal fade" id="addStaffModal" tabindex="-1" role="dialog" aria-labelledby="addStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStaffModalLabel">Thêm Nhân Viên Mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addStaffForm">
+                    <div class="form-group">
+                        <label for="staffName">Tên Nhân Viên</label>
+                        <input type="text" class="form-control" id="staffName" placeholder="Nhập tên nhân viên" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffEmail">Email</label>
+                        <input type="email" class="form-control" id="staffEmail" placeholder="Nhập email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffPhone">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="staffPhone" placeholder="Nhập số điện thoại">
+                    </div>
+                    <div class="form-group">
+                        <label for="staffRole">Vai Trò</label>
+                        <select class="form-control" id="staffRole" required>
+                            <option value="">Chọn vai trò</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Tour_Manager">Tour Manager</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffPassword">Mật Khẩu</label>
+                        <input type="password" class="form-control" id="staffPassword" placeholder="Nhập mật khẩu" required>
+                        <button type="button" style="margin-top: 20px; border-radius: 15px; cursor: pointer; padding: 4px; border: 2px solid #cccccc;" onclick="togglePasswords()">Hiển thị mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="saveStaff">Lưu Nhân Viên</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa nhân viên -->
+<div class="modal fade" id="editStaffModal" tabindex="-1" role="dialog" aria-labelledby="editStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStaffModalLabel">Sửa Thông Tin Nhân Viên</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editStaffForm">
+                    <div class="form-group">
+                        <label for="editStaffName">Tên Nhân Viên</label>
+                        <input type="text" class="form-control" id="editStaffName" placeholder="Nhập tên nhân viên" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffEmail">Email</label>
+                        <input type="email" class="form-control" id="editStaffEmail" placeholder="Nhập email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffPhone">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="editStaffPhone" placeholder="Nhập số điện thoại">
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffRole">Vai Trò</label>
+                        <select class="form-control" id="editStaffRole" required>
+                            <option value="">Chọn vai trò</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Tour_Manager">Tour Manager</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffPassword">Mật Khẩu</label>
+                        <input type="password" class="form-control" id="editStaffPassword" placeholder="Nhập mật khẩu" required>
+                        <button type="button" style="margin-top: 20px; border-radius: 15px; cursor: pointer; padding: 4px; border: 2px solid #cccccc;" onclick="togglePasswords()">Hiển thị mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="updateStaff">Cập Nhật Nhân Viên</button>
+            </div>
+        </div>
+    </div>
+</div>

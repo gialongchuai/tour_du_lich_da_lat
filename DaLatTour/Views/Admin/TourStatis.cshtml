@@ -1,0 +1,94 @@
+﻿@model IEnumerable<DaLatTour.Models.TourStatisticViewModel>
+
+@{
+    Layout = "~/Views/Shared/_LayoutPageTest.cshtml";
+
+    // Lấy dữ liệu ngày từ ViewBag
+    var startDate = ViewBag.StartDate as DateTime?;
+    var endDate = ViewBag.EndDate as DateTime?;
+
+    // Summary data from ViewBag
+    var totalRevenue = ViewBag.TotalRevenue as decimal? ?? 0;
+    var mostBookedTour = ViewBag.MostBookedTour as string ?? "Không có";
+    var mostPopularTour = ViewBag.MostPopularTour as string ?? "Không có";
+    var totalCustomers = ViewBag.TotalCustomers as int? ?? 0;
+
+}
+
+<h2 class="text-center">Thống Kê Số Lượng Tour/Combo Đặt</h2>
+
+<!-- Form chọn thời gian -->
+<div style="margin-bottom: 20px;">
+    <form method="get" action="/Admin/TourStatis">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="form-group">
+                <label for="startDate">Từ ngày:</label>
+                <input type="date" id="startDate" name="startDate" value="@startDate?.ToString(" yyyy-MM-dd")" />
+            </div>
+            <div class="form-group">
+                <label for="endDate">Đến ngày:</label>
+                <input type="date" id="endDate" name="endDate" value="@endDate?.ToString(" yyyy-MM-dd")" />
+            </div>
+            <button type="submit" class="btn btn-primary">Thống Kê</button>
+        </div>
+    </form>
+</div>
+
+<!-- Bảng thống kê -->
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>STT</th>
+            <th>Tên Tour/Combo</th>
+            <th>Số Lượt Đặt</th>
+            <th>Tổng Số Khách</th>
+            <th>Tổng Doanh Thu (VND)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            int index = 1;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@item.Name</td>
+                    <td>@item.TotalBookings</td>
+                    <td>@item.TotalPeople</td>
+                    <td>@string.Format("{0:N0}", item.TotalRevenue)</td>
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">Không có dữ liệu trong khoảng thời gian này.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Summary Boxes -->
+<div class="summary-container">
+    <div class="summary-box">
+        <h3>Tổng Doanh Thu</h3>
+        <p>@string.Format("{0:N0} VND", totalRevenue)</p>
+    </div>
+    <div class="summary-box">
+        <h3>Tour Được Đặt Nhiều Nhất</h3>
+        <p>@mostBookedTour</p>
+    </div>
+    <div class="summary-box">
+        <h3>Tour Có Số Lượng Người Đi Nhiều Nhất</h3>
+        <p>@mostPopularTour</p>
+    </div>
+    <div class="summary-box">
+        <h3>Tổng Số Khách Hàng</h3>
+        <p>@totalCustomers</p>
+    </div>
+
+</div>
+
+<link href="~/Asset/css/tourStatis.css" rel="stylesheet" />

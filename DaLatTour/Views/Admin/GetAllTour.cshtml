@@ -1,0 +1,188 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPageTest.cshtml";
+}
+
+@section Scripts {
+    <script src="~/Scripts/TourMn.js"></script>
+}
+
+<style>
+    .custom-file-input:lang(en) ~ .custom-file-label::after {
+        content: "Chọn tệp";
+    }
+
+    .custom-file-input:lang(en) ~ .custom-file-label::before {
+        content: "";
+    }
+</style>
+
+@model IEnumerable<DaLatTour.Tour>
+
+<h2 style="font-weight: bold; text-align: center;">
+    Danh Sách Tour
+</h2>
+<p style="padding: 20px 0px 0px 20px; font-size: 25px; margin-top: 8px">Tìm kiếm tour:</p>
+
+<div class="row mb-2">
+    <div class="col-md-4" style="padding: 0px 10px 0px 30px">
+        <input type="text" class="form-control" id="searchTour" placeholder="Nhập nội dung để tìm kiếm" />
+    </div>
+    <div class="col-md-2" style="padding: 0px 10px 0px 5px">
+        <button class="btn btn-primary" id="searchTourButton">Tìm kiếm</button>
+    </div>
+    <div class="col-md-6 text-right">
+        @if (ViewBag.AdminRole == "Admin" || ViewBag.AdminRole == "Tour_Manager")
+        {
+            <button class="btn btn-success float-right" data-toggle="modal" data-target="#addTourModal">Thêm Tour</button>
+            <button class="btn btn-primary float-right mr-2" id="editTourButton" disabled>Sửa</button>
+        }
+        @if (ViewBag.AdminRole == "Admin")
+        {
+            <button class="btn btn-danger float-right mr-2" id="deleteTourButton" disabled>Xóa</button>
+        }
+    </div>
+</div>
+
+
+
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col" class="text-center">Chọn</th>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">Tên Tour</th>
+            <th scope="col" class="text-center">Mô Tả</th>
+            <th scope="col" class="text-center">Giá</th>
+            <th scope="col" class="text-center">Thời Lượng (ngày)</th>
+            <th scope="col" class="text-center">Phương Tiện</th>
+            <th scope="col" class="text-center">Số Chỗ Còn Trống</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tour in Model)
+        {
+            <tr>
+                <td class="text-center"><input type="radio" name="selectedTour" class="tourRadio" value="@tour.tour_id"></td>
+                <th scope="row" class="text-center">@tour.tour_id</th>
+                <td class="text-center">@tour.tour_name</td>
+                <td class="text-center">@tour.description</td>
+                <td class="text-center">@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:#,##0} ₫", tour.price)</td>
+                <td class="text-center">@tour.duration</td>
+                <td class="text-center">@tour.travelby</td>
+                <td class="text-center">@tour.available_slots</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal sửa tour -->
+<div class="modal fade" id="editTourModal" tabindex="-1" role="dialog" aria-labelledby="editTourModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTourModalLabel">Sửa Tour</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editTourForm">
+                    <div class="form-group">
+                        <label for="editTourName">Tên Tour</label>
+                        <input type="text" class="form-control" id="editTourName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription">Mô tả</label>
+                        <textarea class="form-control" id="editDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPrice">Giá</label>
+                        <input type="number" class="form-control" id="editPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDuration">Thời lượng (ngày)</label>
+                        <input type="number" class="form-control" id="editDuration" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTravelBy">Phương Tiện</label>
+                        <input type="text" class="form-control" id="editTravelBy" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAvailableSlots">Số chỗ còn trống</label>
+                        <input type="number" class="form-control" id="editAvailableSlots" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTourImage">Ảnh Tour</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="editTourImage" name="editTourImage" accept="image/*">
+                            <label class="custom-file-label" for="editTourImage" id="editTourImageLabel">Chọn tệp</label>
+                        </div>
+                        <input type="hidden" id="editTourImageCurrent" name="editTourImageCurrent">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                @if (ViewBag.AdminRole == "Admin") // Chỉ cho phép Admin lưu thay đổi
+                {
+                    <button type="button" class="btn btn-primary" id="saveEditedTour">Lưu Thay Đổi</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal thêm tour -->
+<div class="modal fade" id="addTourModal" tabindex="-1" role="dialog" aria-labelledby="addTourModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTourModalLabel">Thêm Tour Mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addTourForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="tourName">Tên Tour</label>
+                        <input type="text" class="form-control" id="tourName" placeholder="Nhập tên tour" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Mô tả</label>
+                        <textarea class="form-control" id="description" rows="3" placeholder="Nhập mô tả tour" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Giá</label>
+                        <input type="number" class="form-control" id="price" placeholder="Nhập giá tour" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Thời lượng (ngày)</label>
+                        <input type="number" class="form-control" id="duration" placeholder="Nhập thời lượng tour" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="travelBy">Phương Tiện</label>
+                        <input type="text" class="form-control" id="travelBy" placeholder="Nhập phương tiện" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="availableSlots">Số chỗ còn trống</label>
+                        <input type="number" class="form-control" id="availableSlots" placeholder="Nhập số chỗ còn trống" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tourImage">Ảnh Tour</label>
+                        <input type="file" class="form-control" id="tourImage" name="tourImage" accept="image/*" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                @if (ViewBag.AdminRole == "Admin") // Chỉ cho phép Admin lưu tour
+                {
+                    <button type="button" class="btn btn-primary" id="saveTour">Lưu Tour</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

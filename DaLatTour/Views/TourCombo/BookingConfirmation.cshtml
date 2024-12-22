@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "~/Views/Shared/TourComboLayout.cshtml";
+}
+@model DaLatTour.Models.BookingComboModel
+<div class="booking-confirmation">
+    <div class="container">
+        <p class="text-center">Cảm ơn bạn, <strong>@Model.CustomerName</strong>, đã đặt tour với chúng tôi!</p>
+
+        <div class="alert alert-info text-center mt-4">
+            <h5>Chi tiết đặt tour:</h5>
+            <p><strong>Tour:</strong> @Model.TourName</p>
+            <p><strong>Ngày khởi hành:</strong> @Model.DepartureDate</p>
+            <p><strong>Số lượng người:</strong> @Model.NumPeople người</p>
+            <p><strong>Tổng giá:</strong> @Model.TotalPrice.ToString("N0", new System.Globalization.CultureInfo("vi-VN")) ₫</p>
+        </div>
+
+        <p class="text-center">Thông tin chi tiết về đặt tour đã được gửi tới email của bạn: <strong>@Model.Email</strong>. Vui lòng kiểm tra hộp thư (bao gồm cả thư mục spam).</p>
+        <!-- Nội dung khác -->
+        <div class="text-center">
+            <a href="@Url.Action("Index", "Tour")" class="btn btn-primary">Quay lại trang chủ</a>
+        </div>
+    </div>
+</div>
+
+
+<link href="~/Asset/css/BookingConfirm.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">

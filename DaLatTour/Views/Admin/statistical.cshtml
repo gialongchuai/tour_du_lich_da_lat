@@ -1,0 +1,493 @@
+﻿<!--@{
+    Layout = "~/Views/Shared/_LayoutPageTest.cshtml";
+
+    // Khởi tạo dữ liệu từ ViewBag
+    var months = ViewBag.Months as List<string> ?? new List<string>(); // Danh sách các tháng
+    var revenues = ViewBag.Revenues as List<decimal> ?? new List<decimal>(); // Doanh thu theo tháng
+    var kpiValue = 40000000; // Giá trị KPI để so sánh
+    var startDate = ViewBag.StartDate ?? DateTime.Now; // Ngày bắt đầu
+    var endDate = ViewBag.EndDate ?? DateTime.Now; // Ngày kết thúc
+
+    var tourNames = ViewBag.TourNames as List<string> ?? new List<string>(); // Tên các tour
+    var numberOfBookings = ViewBag.NumberOfBookings as List<int> ?? new List<int>(); // Số lượng đặt tour
+
+    // Tách doanh thu thành hai danh sách: đạt KPI và chưa đạt KPI
+    var revenuesAchieved = new List<decimal>();
+    var revenuesNotAchieved = new List<decimal>();
+
+    // Khởi tạo dữ liệu cho năng suất nhân viên
+    var staffNames = ViewBag.StaffNames as List<string> ?? new List<string>(); // Tên nhân viên
+    var productivity = ViewBag.Productivity as List<decimal> ?? new List<decimal>(); // Năng suất tương ứng
+
+    foreach (var revenue in revenues)
+    {
+        if (revenue >= kpiValue)
+        {
+            revenuesAchieved.Add(revenue);
+            revenuesNotAchieved.Add(0); // Nếu đạt KPI, thêm 0 cho danh sách chưa đạt
+        }
+        else
+        {
+            revenuesAchieved.Add(0); // Nếu không đạt KPI, thêm 0 cho danh sách đạt
+            revenuesNotAchieved.Add(revenue);
+        }
+    }
+}
+
+<h2>THỐNG KÊ DOANH THU VÀ ĐẶT TOUR</h2>-->
+<!-- Gộp hai form vào cùng một container nhưng không lồng form -->
+<!--<div style="display: flex; align-items: center; gap: 10px;">-->
+<!-- Form Thống Kê -->
+<!--<form method="get" action="/Admin/Statistical">
+    <div class="form-group">
+        <label for="startDate">Từ ngày:</label>
+        <input type="date" id="startDate" name="startDate" value="@startDate.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div class="form-group">
+        <label for="endDate">Đến ngày:</label>
+        <input type="date" id="endDate" name="endDate" value="@endDate.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Thống kê</button>
+</form>-->
+<!-- Form Xuất Báo Cáo -->
+<!--<form method="get" action="/Admin/ExportRevenueToExcel">
+        <input type="hidden" id="hiddenStartDate" name="startDate" value="@startDate.ToString("yyyy-MM-dd")" />
+        <input type="hidden" id="hiddenEndDate" name="endDate" value="@endDate.ToString("yyyy-MM-dd")" />
+        <button type="submit" class="btn btn-secondary">Xuất Báo Cáo</button>
+    </form>
+</div>-->
+<!-- Dropdown to select chart -->
+<!--<div class="form-group">
+    <label for="chartSelector">Chọn biểu đồ hiển thị:</label>
+    <select id="chartSelector" onchange="toggleChart()">
+        <option value="productivityChart">Thành Tích Nhân Viên</option>
+        <option value="tourBookingChart">Số lượng đặt tour</option>
+        <option value="revenueChart">Thống Kê Doanh Thu </option>
+        <option value="bookingRevenueChart">Số lượng khách và Doanh thu theo tour</option>
+    </select>
+</div>
+
+<div class="chart-grid">-->
+<!-- Biểu đồ cột cho năng suất nhân viên -->
+<!--<div class="chart-card" id="productivityChartContainer">
+    <h3>Thành Tích Nhân Viên</h3>
+    <canvas id="productivityChart"></canvas>
+</div>-->
+<!-- Biểu đồ tròn cho số lượng đặt tour -->
+<!--<div class="chart-card" id="tourBookingChartContainer" style="display:none;">
+    <h3>Số lượng đặt tour</h3>
+    <canvas id="tourBookingChart"></canvas>
+</div>-->
+<!-- Biểu đồ cột cho doanh thu đạt và chưa đạt KPI -->
+<!--<div class="chart-card" id="revenueChartContainer" style="display:none;">
+    <h3>Thống Kê Doanh Thu</h3>
+    <canvas id="revenueChart"></canvas>
+</div>-->
+<!-- Biểu đồ kết hợp cho số lượng khách và doanh thu theo tour -->
+<!--<div class="chart-card" id="bookingRevenueChartContainer" style="display:none;">
+        <h3>Số lượng khách và Doanh thu theo tour</h3>
+        <canvas id="bookingRevenueChart"></canvas>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+<script>
+    function toggleChart() {
+        // Get selected value from dropdown
+        var selectedChart = document.getElementById("chartSelector").value;
+
+        // Hide all chart containers
+        var charts = ["productivityChartContainer", "tourBookingChartContainer", "revenueChartContainer", "bookingRevenueChartContainer"];
+        charts.forEach(function (chartId) {
+            document.getElementById(chartId).style.display = "none";
+        });
+
+        // Show the selected chart container
+        document.getElementById(selectedChart + "Container").style.display = "block";
+    }
+    // Dữ liệu từ ViewBag (được chuyển sang JSON trong Razor)
+    var months = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Months)); // Các tháng
+    var revenues = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Revenues)); // Doanh thu theo tháng
+
+    // Biểu đồ cột cho doanh thu
+    var ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+    var revenueChart = new Chart(ctxRevenue, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Doanh thu theo tháng',
+                data: revenues,
+                backgroundColor: 'rgba(75, 192, 192, 0.4)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                hoverBackgroundColor: 'rgba(75, 192, 192, 0.6)',
+                hoverBorderColor: 'rgba(75, 192, 192, 1)',
+                hoverBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Doanh thu (VND)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tháng'
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Thống kê doanh thu theo tháng',
+                    padding: { top: 10, bottom: 30 },
+                    font: { size: 20, weight: 'bold' }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    bodyFont: { size: 14 },
+                    titleFont: { size: 16 }
+                }
+            }
+        }
+    });
+    // Biểu đồ donut cho số lượng đặt tour
+    var tourNames = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(tourNames)); // Tên các tour
+    var numberOfBookings = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(numberOfBookings)); // Số lượng đặt tour
+
+    var ctxTourBooking = document.getElementById('tourBookingChart').getContext('2d');
+    var tourBookingChart = new Chart(ctxTourBooking, {
+        type: 'doughnut',
+        data: {
+            labels: tourNames,
+            datasets: [{
+                label: 'Số lượng đặt tour',
+                data: numberOfBookings,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Tỉ lệ % các tour đặt từ ngày @startDate.ToString("dd/MM/yyyy") đến ngày @endDate.ToString("dd/MM/yyyy")`,
+                    padding: {
+                        top: 10,
+                        bottom: 10
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return `${tooltipItem.label}: ${tooltipItem.raw}`; // Hiển thị tên tour và số lượng
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Biểu đồ năng suất nhân viên
+    var staffNames = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(staffNames)); // Tên nhân viên
+    var productivity = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(productivity)); // Năng suất
+
+    var ctxProductivity = document.getElementById('productivityChart').getContext('2d');
+    var productivityChart = new Chart(ctxProductivity, {
+        type: 'bar',
+        data: {
+            labels: staffNames,
+            datasets: [{
+                label: 'Năng suất (Doanh thu)',
+                data: productivity,
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Năng suất (Đồng)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Nhân viên'
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Năng suất của từng nhân viên từ ngày @startDate.ToString("dd/MM/yyyy") đến ngày @endDate.ToString("dd/MM/yyyy")`
+                }
+            }
+
+        }
+    });
+
+var months = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Months)); // Các tháng
+var totalCustomers = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.TotalCustomers)); // Số lượng khách theo tháng
+var totalRevenue = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.TotalRevenue)); // Doanh thu theo tháng
+
+// Biểu đồ kết hợp: cột cho số lượng khách, đường cho doanh thu
+var ctxBookingRevenue = document.getElementById('bookingRevenueChart').getContext('2d');
+var bookingRevenueChart = new Chart(ctxBookingRevenue, {
+    type: 'bar',  // Loại biểu đồ chính là "bar" cho số lượng khách
+    data: {
+        labels: months, // Nhãn là các tháng
+        datasets: [
+            {
+                label: 'Số lượng khách',
+                data: totalCustomers,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)', // Màu nền cho cột
+                borderColor: 'rgba(75, 192, 192, 1)', // Màu viền cho cột
+                borderWidth: 1,
+                yAxisID: 'y', // Sử dụng trục y đầu tiên
+            },
+            {
+                label: 'Doanh thu (VND)',
+                data: totalRevenue,
+                type: 'line', // Loại biểu đồ cho doanh thu là "line"
+                backgroundColor: 'rgba(255, 99, 132, 0.2)', // Màu nền cho đường
+                borderColor: 'rgba(255, 99, 132, 1)', // Màu viền cho đường
+                borderWidth: 2,
+                fill: false, // Không tô màu dưới đường
+                yAxisID: 'y1', // Sử dụng trục y thứ hai
+            }
+        ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Số lượng khách'
+                }
+            },
+            y1: {
+                beginAtZero: true,
+                position: 'right', // Trục y thứ hai ở bên phải
+                title: {
+                    display: true,
+                    text: 'Doanh thu (VND)'
+                },
+                grid: {
+                    drawOnChartArea: false, // Không vẽ đường lưới trục y1
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Tháng'
+                }
+            }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: `Số lượng khách và Doanh thu theo tháng từ ngày @ViewBag.StartDate.ToString("dd/MM/yyyy") đến ngày @ViewBag.EndDate.ToString("dd/MM/yyyy")`
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        if (context.dataset.label === 'Doanh thu (VND)') {
+                            // Định dạng doanh thu thành dạng tiền tệ khi hover vào đường
+                            return context.dataset.label + ': ' + new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.raw);
+                        } else {
+                            return context.dataset.label + ': ' + context.raw;
+                        }
+                    }
+                }
+            }
+        }
+    }
+});
+
+
+</script>
+    -->
+<link href="~/Asset/css/Statistical.css" rel="stylesheet" />
+<h2>THỐNG KÊ DOANH THU</h2>
+
+<!-- Form lựa chọn thời gian -->
+<div class="form-container">
+    <form method="get" action="/Admin/Statistical" class="statistical-form">
+        <div class="form-group">
+            <label for="startDate">Từ ngày:</label>
+            <input type="date" id="startDate" name="startDate" value="@ViewBag.StartDate.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <div class="form-group">
+            <label for="endDate">Đến ngày:</label>
+            <input type="date" id="endDate" name="endDate" value="@ViewBag.EndDate.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <div class="form-group">
+            <label for="timeRange">Thống kê theo:</label>
+            <select id="timeRange" name="timeRange">
+                <option value="day" @(ViewBag.TimeRange == "day" ? "selected" : "")>Ngày</option>
+                <option value="week" @(ViewBag.TimeRange == "week" ? "selected" : "")>Tuần</option>
+                <option value="month" @(ViewBag.TimeRange == "month" ? "selected" : "")>Tháng</option>
+                <option value="quarter" @(ViewBag.TimeRange == "quarter" ? "selected" : "")>Quý</option>
+                <option value="year" @(ViewBag.TimeRange == "year" ? "selected" : "")>Năm</option>
+            </select>
+        </div>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Thống kê</button>
+            <form method="get" action="/Admin/ExportRevenueToExcel" class="export-form-inline">
+                <input type="hidden" id="hiddenStartDate" name="startDate" value="@ViewBag.StartDate.ToString("yyyy-MM-dd")" />
+                <input type="hidden" id="hiddenEndDate" name="endDate" value="@ViewBag.EndDate.ToString("yyyy-MM-dd")" />
+                <button type="submit" class="btn btn-secondary">Xuất Báo Cáo</button>
+            </form>
+        </div>
+    </form>
+</div>
+
+<!--Biểu đồ doanh thu-->
+<div class="chart-grid">
+    <div class="chart-card">
+        <h3>Biểu đồ doanh thu</h3>
+        <canvas id="revenueChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Lấy dữ liệu từ ViewBag
+    var labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Labels)); // Nhãn thời gian
+    var data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Data)); // Dữ liệu doanh thu
+
+    // Cấu hình biểu đồ doanh thu
+    var ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+    var revenueChart = new Chart(ctxRevenue, {
+        type: 'bar', // Biểu đồ cột
+        data: {
+            labels: labels, // Nhãn (ngày, tuần, tháng, quý, năm)
+            datasets: [{
+                label: 'Doanh thu (VND)',
+                data: data, // Dữ liệu doanh thu
+                backgroundColor: 'rgba(0, 102, 204, 1)', // Xanh đậm
+                borderColor: 'rgba(0, 51, 102, 1)', // Màu viền đậm hơn
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Doanh thu (VND)',
+                        font: {
+                            size: 16, // Tăng kích thước chữ
+                            weight: 'bold',
+                        }
+                    },
+                    ticks: {
+                        color: '#000', // Màu chữ đậm hơn
+                        font: {
+                            size: 14, // Tăng kích thước chữ
+                        }
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Thời gian',
+                        font: {
+                            size: 16,
+                            weight: 'bold',
+                        }
+                    },
+                    ticks: {
+                        color: '#000', // Màu chữ đậm hơn
+                        font: {
+                            size: 14,
+                        }
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Thống kê doanh thu',
+                    font: {
+                        size: 18,
+                        weight: 'bold',
+                    },
+                    padding: {
+                        top: 20,
+                        bottom: 20
+                    }
+                },
+                legend: {
+                    labels: {
+                        color: '#000', // Màu chữ của chú thích
+                        font: {
+                            size: 14,
+                        }
+                    }
+                },
+                tooltip: {
+                    bodyFont: {
+                        size: 14, // Kích thước chữ tooltip
+                    },
+                    titleFont: {
+                        size: 16,
+                        weight: 'bold',
+                    },
+                    backgroundColor: 'rgba(0, 51, 102, 1)', // Tooltip màu xanh đậm
+                    titleColor: '#fff', // Màu chữ tiêu đề trong tooltip
+                    bodyColor: '#fff', // Màu chữ nội dung tooltip
+                }
+            }
+        }
+    });
+</script>

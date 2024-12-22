@@ -1,0 +1,149 @@
+﻿@model IEnumerable<DaLatTour.Models.BookingModel>
+
+@{
+    Layout = "~/Views/Shared/_LayoutPage2.cshtml";
+}
+
+<h2 class="table-title">Quản lý Đặt Tour</h2>
+
+<!-- Các Tab -->
+<div class="tabs">
+    <ul class="tab-titles">
+        <li class="active" data-tab="history-tab">Lịch Sử Đặt Tour</li>
+        <li data-tab="review-tab">Đánh Giá Tour Đã Đi</li>
+    </ul>
+
+    <!-- Nội dung Tab -->
+    <div class="tab-content">
+        <!-- Tab 1: Lịch sử đặt tour -->
+        <div id="history-tab" class="tab-panel active">
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Đặt Tour</th>
+                            <th>Tên Khách Hàng</th>
+                            <th>Ngày Đặt</th>
+                            <th>Tên Tour</th>
+                            <th>Tổng Tiền</th>
+                            <th>Số Người</th>
+                            <th>Trạng Thái</th>
+                            <th>Ngày Khởi Hành</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            <tr>
+                                <td>@booking.BookingId</td>
+                                <td>@booking.CustomerName</td>
+                                <td>@(booking.BookingDate.HasValue ? booking.BookingDate.Value.ToShortDateString() : "N/A")</td>
+                                <td>@booking.TourName</td>
+                                <td>@booking.TotalPrice.ToString("C", new System.Globalization.CultureInfo("vi-VN")).Replace("₫", "VND")</td>
+                                <td>@booking.NumPeople</td>
+                                <td>
+                                    <span class="status-badge @(booking.BookingStatus == "Pending" ? "status-pending" :
+                                                             booking.BookingStatus == "Confirmed" ? "status-confirmed" :
+                                                             "status-cancelled")">
+                                        @booking.BookingStatus
+                                    </span>
+                                </td>
+                                <td>@(booking.DepartureDate.HasValue ? booking.DepartureDate.Value.ToShortDateString() : "N/A")</td>
+                                <td>
+                                    @if (booking.BookingStatus != "Cancelled" && booking.DepartureDate.HasValue && (booking.DepartureDate.Value - DateTime.Now).TotalDays >= 7)
+                                    {
+                                        <button type="button" class="btn btn-danger btn-cancel" data-booking-id="@booking.BookingId">Hủy Tour</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="review-tab" class="tab-panel">
+            <h3>Đánh giá các tour đã đi</h3>
+            <form method="post" action="@Url.Action("SubmitReview", "Tour")">
+                <!-- Dropdown để chọn tour -->
+                <div class="form-group">
+                    <label for="BookingId">Chọn tour đã đi</label>
+                    <select id="BookingId" name="bookingId" class="form-control" required>
+                        <option value="">-- Chọn tour --</option>
+                        @foreach (var tour in Model)
+                        {
+                            if (tour.IsReview == 0)
+                            {
+                                <option value="@tour.BookingId">
+                                    @tour.TourName - @(tour.DepartureDate.HasValue ? tour.DepartureDate.Value.ToString("dd/MM/yyyy") : "N/A")
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <!-- Nội dung đánh giá -->
+                <div class="form-group">
+                    <label for="ReviewContent">Nội dung đánh giá</label>
+                    <textarea id="ReviewContent" name="reviewContent" class="form-control" rows="5" required></textarea>
+                </div>
+
+                <!-- Đánh giá (1-5 sao) -->
+                <div class="form-group">
+                    <label for="Rating">Đánh giá (1-5 sao)</label>
+                    <input type="number" id="Rating" name="rating" min="1" max="5" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Gửi Đánh Giá</button>
+            </form>
+        </div>
+    </div>
+</div>
+<link href="~/Asset/css/TourHistory.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Tab switching logic
+        $('.tab-titles li').click(function () {
+            var tabId = $(this).data('tab');
+
+            // Chuyển đổi tab active
+            $('.tab-titles li').removeClass('active');
+            $(this).addClass('active');
+
+            // Hiển thị nội dung của tab được chọn
+            $('.tab-panel').removeClass('active');
+            $('#' + tabId).addClass('active');
+        });
+
+        // Xử lý hủy tour
+        $('.btn-cancel').click(function () {
+            var bookingId = $(this).data('booking-id');
+
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn hủy tour này không?',
+                text: "Hủy tour sẽ không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Hủy tour',
+                cancelButtonText: 'Không'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("CancelBooking", "Tour")', { bookingId: bookingId }, function (data) {
+                        if (data.success) {
+                            Swal.fire('Hủy tour thành công!', '', 'success');
+                            location.reload();
+                        } else {
+                            Swal.fire('Lỗi', data.message, 'error');
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "~/Views/Shared/TourComboLayout.cshtml";
+    ViewBag.Title = "Kết quả thanh toán";
+
+}
+
+<h2>@ViewBag.Message</h2>
+
+@if (ViewBag.Message == "Thanh toán thành công!")
+{
+    <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Đơn hàng của bạn đã được xác nhận.</p>
+}
+else
+{
+    <p>Vui lòng thử lại hoặc liên hệ với chúng tôi nếu cần hỗ trợ.</p>
+}

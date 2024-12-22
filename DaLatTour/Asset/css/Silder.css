@@ -1,0 +1,69 @@
+﻿.slider-container {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 900px; /* Chiều cao của container */
+}
+
+.slider {
+    position: relative;
+    width: 1600px; /* Chiều rộng slider */
+    height: 900px; /* Chiều cao slider */
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+    .slide.active {
+        opacity: 1;
+    }
+
+.video-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+video {
+    width: 1600px;
+    height: 900px;
+    object-fit: cover;
+}
+
+.video-text {
+    position: absolute;
+    bottom: 20px; /* Căn chỉnh văn bản sát dưới video */
+    left: 50%;
+    transform: translateX(-150%); /* Ban đầu, đẩy văn bản ra ngoài bên trái */
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    opacity: 0; /* Ban đầu ẩn chữ */
+    transition: transform 1s ease-in-out, opacity 1s ease-in-out; /* Hiệu ứng chuyển động và hiển thị */
+}
+
+    .video-text.active {
+        transform: translateX(-50%); /* Khi active, chuyển văn bản về giữa */
+        opacity: 1; /* Hiển thị chữ */
+    }
+
+    .video-text .title {
+        font-size: 2rem;
+        margin: 0;
+    }
+
+    .video-text .description {
+        font-size: 1rem;
+        margin: 0;
+    }

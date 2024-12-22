@@ -1,0 +1,192 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPageTest.cshtml";
+}
+
+@section Scripts {
+    <script src="~/Asset/js/ScheduleTour.js"></script> <!-- Script JS xử lý logic -->
+}
+
+@model DaLatTour.Models.TourSelectionViewModel
+
+<h2>Danh Sách Lịch Trình Tour</h2>
+
+<!-- Dropdown chọn loại tour -->
+<div class="form-group">
+    <label for="tourTypeDropdown">Chọn kiểu tour để hiển thị:</label>
+    <select class="form-control w-25" id="tourTypeDropdown" onchange="toggleTourTables()">
+        <option value="regular">Tour Thường</option>
+        <option value="combo">Tour Combo</option>
+    </select>
+</div>
+
+@*@if (ViewBag.AdminRole == "Admin" || ViewBag.AdminRole == "Tour_Manager")
+{*@
+    <!-- Nút thêm, sửa, xóa lịch trình -->
+    <button class="btn btn-success float-right" data-toggle="modal" data-target="#addScheduleModal">Thêm Lịch Trình</button>
+    <button class="btn btn-primary  float-right mr-2" id="editScheduleButton" disabled data-toggle="modal" data-target="#editScheduleModal">Sửa</button>
+    <button class="btn btn-danger float-right mr-2" id="deleteScheduleButton" disabled>Xóa</button>
+@*}*@
+
+<!-- Bảng hiển thị Tour Thường -->
+<div id="regularToursTable" style="display:none;">
+    <h3>Danh Sách Lịch Trình Tour Thường</h3>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th class="text-center">Chọn</th>
+                <th class="text-center">Mã Tour</th>
+                <th class="text-center">Ngày Khởi Hành</th>
+                <th class="text-center">Ngày Kết Thúc</th>
+                <th class="text-center">Số Người Đi</th>
+                <th class="text-center">Hoạt Động Hàng Ngày</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tour in Model.RegularTours)
+            {
+                <tr>
+                    <td class="text-center">
+                        <input type="radio" name="selectedSchedule" class="scheduleRadio" value="@tour.tour_detail_id" data-tour-type="Regular">
+                    </td>
+                    <td class="text-center">@tour.tour_id</td>
+                    <td class="text-center">@tour.departure_date.ToString("dd/MM/yyyy")</td>
+                    <td class="text-center">@tour.return_date.ToString("dd/MM/yyyy")</td>
+                    <td class="text-center">@tour.num_people</td>
+                    <td class="text-center">@tour.daily_activities</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Bảng hiển thị Tour Combo -->
+<div id="comboToursTable" style="display:none;">
+    <h3>Danh Sách Lịch Trình Tour Combo</h3>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th class="text-center">Chọn</th>
+                <th class="text-center">Mã Combo</th>
+                <th class="text-center">Ngày Khởi Hành</th>
+                <th class="text-center">Giá</th>
+                <th class="text-center">Số Chỗ Trống</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var combo in Model.ComboTours)
+            {
+                <tr>
+                    <td class="text-center">
+                        <input type="radio" name="selectedSchedule" class="scheduleRadio" value="@combo.departure_id" data-tour-type="Combo">
+                    </td>
+                    <td class="text-center">@combo.combo_id</td>
+                    <td class="text-center">@combo.departure_date.ToString("dd/MM/yyyy")</td>
+                    <td class="text-center">@combo.price.ToString("C")</td>
+                    <td class="text-center">@combo.available_slots</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal thêm lịch trình -->
+<div class="modal fade" id="addScheduleModal" tabindex="-1" role="dialog" aria-labelledby="addScheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addScheduleModalLabel">Thêm Lịch Trình Mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addScheduleForm">
+                    <!-- Chọn loại tour -->
+                    <div class="form-group">
+                        <label for="tourType">Chọn loại tour</label>
+                        <select class="form-control" id="tourType" required onchange="loadTourList(this.value)">
+                            <option value="">Chọn loại tour</option>
+                            <option value="Regular">Tour Thường</option>
+                            <option value="Combo">Tour Combo</option>
+                        </select>
+                    </div>
+                    <!-- Chọn tour -->
+                    <div class="form-group">
+                        <label for="tourSelect">Chọn tour</label>
+                        <select class="form-control" id="tourSelect" required>
+                            <option value="">Chọn tour</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="departureDate">Ngày Khởi Hành</label>
+                        <input type="date" class="form-control" id="departureDate" required>
+                    </div>
+                    <div class="form-group" id="returnDateField">
+                        <label for="returnDate">Ngày Kết Thúc</label>
+                        <input type="date" class="form-control" id="returnDate">
+                    </div>
+                    <div class="form-group" id="numPeopleField">
+                        <label for="numPeople">Số Người Đi</label>
+                        <input type="number" class="form-control" id="numPeople" required>
+                    </div>
+                    <div class="form-group" id="priceField" style="display: none;">
+                        <label for="price">Giá</label>
+                        <input type="number" class="form-control" id="price" placeholder="Nhập giá" min="0" step="0.01">
+                    </div>
+                    <div class="form-group" id="dailyActivitiesField">
+                        <label for="dailyActivities">Hoạt Động Hàng Ngày</label>
+                        <textarea class="form-control" id="dailyActivities" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="saveSchedule">Lưu Lịch Trình</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa lịch trình -->
+<div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="editScheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editScheduleModalLabel">Sửa Lịch Trình</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editScheduleForm">
+                    <div class="form-group">
+                        <label for="editDepartureDate">Ngày Khởi Hành</label>
+                        <input type="date" class="form-control" id="editDepartureDate" required>
+                    </div>
+                    <div class="form-group" id="returnDateField">
+                        <label for="editReturnDate">Ngày Kết Thúc</label>
+                        <input type="date" class="form-control" id="editReturnDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="editNumPeople">Số Người Đi / Số Chỗ Trống</label>
+                        <input type="number" class="form-control" id="editNumPeople" required>
+                    </div>
+                    <div class="form-group" id="priceField">
+                        <label for="editPrice">Giá Combo</label>
+                        <input type="number" class="form-control" id="editPrice" placeholder="Nhập giá" min="0" step="0.01">
+                    </div>
+
+                    <div class="form-group" id="dailyActivitiesField">
+                        <label for="editDailyActivities">Hoạt Động Hàng Ngày</label>
+                        <textarea class="form-control" id="editDailyActivities" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="updateSchedule">Cập Nhật Lịch Trình</button>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="~/Asset/css/ScheduleTour.css" rel="stylesheet" />

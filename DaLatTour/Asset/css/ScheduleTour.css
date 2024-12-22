@@ -1,0 +1,131 @@
+﻿/* Tạo phong cách nền tối nhẹ và đổi font chữ */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+/* Tiêu đề trang */
+h2 {
+    text-align: center;
+    color: #333;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+/* Đổi kiểu nút */
+button {
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    button:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+/* Dropdown chọn kiểu tour */
+.form-group label {
+    font-weight: 600;
+}
+
+#tourTypeDropdown {
+    padding: 7px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Bảng lịch trình */
+.table {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+    .table thead {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f7ff;
+    }
+
+/* Căn chỉnh text trong bảng */
+.text-center {
+    vertical-align: middle;
+}
+
+/* Modal styling */
+.modal-content {
+    border-radius: 8px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background-color: #007bff;
+    color: #fff;
+    border-bottom: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.modal-footer button {
+    padding: 8px 20px;
+    font-size: 16px;
+}
+
+/* Form fields in modals */
+.modal-body input[type="date"],
+.modal-body input[type="number"],
+.modal-body textarea,
+.modal-body select {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.modal-body textarea {
+    resize: none;
+}
+
+    .modal-body input:focus,
+    .modal-body textarea:focus,
+    .modal-body select:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.4);
+    }

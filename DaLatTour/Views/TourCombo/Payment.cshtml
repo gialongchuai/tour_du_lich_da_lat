@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "~/Views/Shared/TourComboLayout.cshtml";
+}
+
+@model DaLatTour.Booking
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Thanh Toán Đơn Hàng</h2>
+    <p>Mã đặt tour: <strong>@Model.booking_id</strong></p>
+    <p>Số tiền cần thanh toán: <strong>@Model.total_price.ToString("N0") VND</strong></p>
+
+    <!-- Mã QR thanh toán -->
+    <div class="text-center my-4">
+        <h5>Quét mã QR để thanh toán</h5>
+        <img src="https://img.vietqr.io/image/TPB-58030713968-compact2.jpg?amount=@Model.total_price&addInfo=DatTour_@Model.booking_id"
+             alt="QR Code for Bank Transfer" width="400" height="400" />
+        <p>Vui lòng nhập mã đặt tour <strong>@Model.booking_id</strong> trong nội dung chuyển khoản để hệ thống tự động xác nhận thanh toán của bạn.</p>
+    </div>
+
+    <div class="text-center">
+        <button id="confirmPaymentBtn" class="btn btn-success">Xác nhận thanh toán</button>
+    </div>
+</div>
+
+
+<script>
+document.getElementById("confirmPaymentBtn").addEventListener("click", function(event) {
+    event.preventDefault(); // Ngăn chặn việc gửi nhiều lần
+    this.disabled = true; // Vô hiệu hóa nút sau lần nhấp đầu tiên để tránh gửi yêu cầu nhiều lần
+
+    // Tiến hành gửi yêu cầu fetch
+    fetch(`/TourCombo/ConfirmPayment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingId: "@Model.booking_id" })
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = `/TourCombo/BookingConfirmation?bookingId=@Model.booking_id`;
+        } else {
+            alert("Đã xảy ra lỗi trong quá trình xác nhận thanh toán.");
+        }
+    })
+    .catch(error => console.error("Lỗi xác nhận thanh toán:", error));
+});
+
+</script>

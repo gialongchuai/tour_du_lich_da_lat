@@ -1,0 +1,156 @@
+﻿body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #0066ff, #66ccff);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.session {
+    display: flex;
+    width: 900px;
+    height: 600px;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.left {
+    width: 50%;
+    background: url('~/Asset/img/landscape.jpg') no-repeat center center/cover;
+    position: relative;
+}
+
+.left-content {
+    position: absolute;
+    bottom: 30px;
+    left: 20px;
+    color: #fff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.log-in {
+    width: 50%;
+    padding: 50px 30px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #333;
+}
+
+h4 {
+    font-size: 30px;
+    text-align: center;
+    font-weight: 700;
+    color: #0066ff;
+}
+
+    h4 span {
+        color: #66ccff;
+    }
+
+p {
+    text-align: center;
+    color: #555;
+    margin-bottom: 40px;
+}
+
+.floating-label {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+    .floating-label input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        font-size: 16px;
+        outline: none;
+        transition: border-bottom-color 0.3s;
+    }
+
+    .floating-label label {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        font-size: 16px;
+        color: #aaa;
+        transition: top 0.3s, font-size 0.3s, color 0.3s;
+    }
+
+    .floating-label input:focus {
+        border-bottom-color: #0066ff;
+    }
+
+        .floating-label input:focus + label,
+        .floating-label input:not(:placeholder-shown) + label {
+            top: -10px;
+            font-size: 12px;
+            color: #0066ff;
+        }
+
+button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    background: #0066ff;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+    button[type="submit"]:hover {
+        background: #004db3;
+    }
+
+    button[type="submit"]:active {
+        background: #003d99;
+    }
+
+/* Popup Styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 1000;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 1001;
+    text-align: center;
+    color: #333;
+    border-radius: 10px;
+}
+
+    .popup button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #0066ff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }

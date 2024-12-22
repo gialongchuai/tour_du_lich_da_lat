@@ -1,0 +1,171 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPageTest.cshtml";
+}
+
+@section Scripts {
+    <script src="~/Scripts/CustomerMn.js"></script>
+}
+
+@model IEnumerable<DaLatTour.Models.User>
+
+<h2 style="font-weight: bold; text-align: center;">
+    Danh Sách Người Dùng
+</h2>
+<p style="padding: 20px 0px 0px 20px; font-size: 25px; margin-top: 8px">Tìm kiếm người dùng:</p>
+
+<div class="row mb-2">
+    <div class="col-md-4" style="padding: 0px 10px 0px 30px">
+        <input type="text" class="form-control" id="searchUser" placeholder="Nhập nội dung để tìm kiếm" />
+    </div>
+    <div class="col-md-2" style="padding: 0px 10px 0px 5px">
+        <button class="btn btn-primary" id="searchUserButton">Tìm kiếm</button>
+    </div>
+    <div class="col-md-6 text-right">
+        @if (ViewBag.AdminRole == "Admin" || ViewBag.AdminRole == "Tour_Manager" || ViewBag.AdminRole == "Staff")
+        {
+            <button class="btn btn-success float-right" data-toggle="modal" data-target="#addUserModal">Thêm User</button>
+            <button class="btn btn-primary float-right mr-2" id="editUserButton" disabled>Sửa</button>
+            <button class="btn btn-danger float-right mr-2" id="deleteUserButton" disabled>Xóa</button>
+        }
+    </div>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col" class="text-center">Chọn</th>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">Tên</th>
+            <th scope="col" class="text-center">Email</th>
+            <th scope="col" class="text-center">Số Điện Thoại</th>
+            <th scope="col" class="text-center">Tài khoản</th>
+            <th scope="col" class="text-center">Mật Khẩu</th>
+            <th scope="col" class="text-center">Địa Chỉ</th>
+            <th scope="col" class="text-center">Ngày Sinh</th>
+            <th scope="col" class="text-center">Ngày Tạo Tài Khoản</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            var formattedDob = user.dob.HasValue ? user.dob.Value.ToString("dd/MM/yyyy") : string.Empty;
+            <tr>
+                <td class="text-center"><input type="radio" name="selectedUser" class="userRadio" value="@user.customer_id"></td>
+                <th scope="row" class="text-center">@user.customer_id</th>
+                <td class="text-center">@user.name</td>
+                <td class="text-center">@user.email</td>
+                <td class="text-center">@user.phone</td>
+                <td class="text-center">@user.username</td>
+                <td class="text-center">******</td> <!-- Hiển thị mật khẩu dưới dạng ẩn -->
+                <td class="text-center">@user.address</td>
+                <td class="text-center">@formattedDob</td>
+                <td class="text-center">@user.created_at.ToString("dd/MM/yyyy HH:mm")</td> <!-- Định dạng ngày tạo tài khoản -->
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal thêm người dùng -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Thêm Người Dùng Mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="name">Tên Người Dùng</label>
+                        <input type="text" class="form-control" id="name" placeholder="Nhập tên người dùng" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" class="form-control" id="userEmail" placeholder="Nhập email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhone">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="userPhone" placeholder="Nhập số điện thoại">
+                    </div>
+                    <div class="form-group">
+                        <label for="userName">Nhập tài khoản</label>
+                        <input type="text" class="form-control" id="userName" placeholder="Nhập tài khoản">
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">Mật Khẩu</label>
+                        <input type="password" class="form-control" id="userPassword" placeholder="Nhập mật khẩu" required>
+                        <button type="button" style="margin-top: 20px; border-radius: 15px; cursor: pointer; padding: 4px; border: 2px solid #cccccc;" onclick="togglePasswords()">Hiển thị mật khẩu</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="userAddress">Địa Chỉ</label>
+                        <input type="text" class="form-control" id="userAddress" placeholder="Nhập địa chỉ" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userDob">Ngày Sinh</label>
+                        <input type="date" class="form-control" id="userDob" placeholder="Nhập ngày sinh">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="saveUser">Lưu Người Dùng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa người dùng -->
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Sửa Thông Tin Người Dùng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <div class="form-group">
+                        <label for="editName">Tên Người Dùng</label>
+                        <input type="text" class="form-control" id="editName" placeholder="Nhập tên người dùng" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserEmail">Email</label>
+                        <input type="email" class="form-control" id="editUserEmail" placeholder="Nhập email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserPhone">Số Điện Thoại</label>
+                        <input type="text" class="form-control" id="editUserPhone" placeholder="Nhập số điện thoại">
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserName">Nhập tài khoản</label>
+                        <input type="text" class="form-control" id="editUserName" placeholder="Nhập tài khoản">
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserPassword">Mật Khẩu</label>
+                        <input type="password" class="form-control" id="editUserPassword" placeholder="Nhập mật khẩu" required>
+                        <button type="button" style="margin-top: 20px; border-radius: 15px; cursor: pointer; padding: 4px; border: 2px solid #cccccc;" onclick="togglePasswords()">Hiển thị mật khẩu</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserAddress">Địa Chỉ</label>
+                        <input type="text" class="form-control" id="editUserAddress" placeholder="Nhập địa chỉ" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserDob">Ngày Sinh</label>
+                        <input type="date" class="form-control" id="editUserDob" placeholder="Nhập ngày sinh">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="updateUser">Cập Nhật Người Dùng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

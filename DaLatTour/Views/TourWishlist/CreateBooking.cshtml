@@ -1,0 +1,99 @@
+﻿@{
+    Layout = "~/Views/Shared/TourComboLayout.cshtml";
+}
+@model DaLatTour.Models.BookingWishlistModel
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Nhập Thông Tin Đặt Tour</h2>
+
+    <form id="bookingForm" method="post" action="@Url.Action("CreateBooking", "TourWishlist")">
+
+        @Html.HiddenFor(m => m.TourId)
+        @Html.HiddenFor(m => m.WishlistId)
+
+        <!-- Ngày đi -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="DepartureDate" class="form-label">Ngày khởi hành:</label>
+                    @Html.TextBoxFor(m => m.DepartureDate, new { @class = "form-control", type = "date", required = "required" })
+                    @Html.ValidationMessageFor(m => m.DepartureDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6">
+                    <p>
+                        <strong>Giá ban đầu:</strong> <span id="basePrice">
+                            @Model.TotalPrice.ToString("C", new System.Globalization.CultureInfo("vi-VN")).Replace("₫", "VND")
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+        <!-- Ngày về -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="DepartureDate" class="form-label">Ngày về:</label>
+                    @Html.TextBoxFor(m => m.ReturnDate, new { @class = "form-control", type = "date", required = "required" })
+                    @Html.ValidationMessageFor(m => m.ReturnDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <!-- Tên khách hàng -->
+        <div class="form-group mb-3">
+            <label for="CustomerName" class="form-label">Tên khách hàng:</label>
+            @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", required = "required", placeholder = "Nhập tên của bạn" })
+            @Html.ValidationMessageFor(m => m.CustomerName, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Số điện thoại -->
+        <div class="form-group mb-3">
+            <label for="PhoneNumber" class="form-label">Số điện thoại:</label>
+            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", type = "tel", required = "required", placeholder = "Nhập số điện thoại của bạn" })
+            @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Email -->
+        <div class="form-group mb-3">
+            <label for="Email" class="form-label">Email:</label>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", required = "required", placeholder = "Nhập email của bạn" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Số người tham gia -->
+        <div class="form-group mb-3">
+            <label for="NumPeople">Số người tham gia:</label>
+            @Html.TextBoxFor(m => m.NumPeople, new { @class = "form-control", id = "NumPeople", type = "number", min = "1", required = "required" })
+            @Html.ValidationMessageFor(m => m.NumPeople, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Yêu cầu đặc biệt -->
+        <div class="form-group mb-3">
+            <label for="SpecialRequests" class="form-label">Yêu cầu đặc biệt:</label>
+            @Html.TextAreaFor(m => m.SpecialRequests, new { @class = "form-control", rows = 4, placeholder = "Nhập các yêu cầu đặc biệt (nếu có)" })
+            @Html.ValidationMessageFor(m => m.SpecialRequests, "", new { @class = "text-danger" })
+        </div>
+
+
+        <!-- Phương thức thanh toán -->
+        <div class="form-group mb-4">
+            <label for="PaymentMethod" class="form-label">Phương thức thanh toán:</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="cash" value="Cash" required>
+                <label class="form-check-label" for="cash">Tiền mặt</label>
+            </div>
+            @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-danger" })
+        </div>
+
+        <!-- Nút đặt tour -->
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary btn-lg">Đặt Tour</button>
+        </div>
+    </form>
+</div>
+
+
+
+<!-- Liên kết jQuery và Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,184 @@
+﻿/* Main image container */
+.main-image-container {
+    position: relative;
+    overflow: hidden;
+    max-height: 800px; /* Giới hạn chiều cao của ảnh chính */
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Additional images */
+.additional-images {
+    display: flex; /* Hiển thị các ảnh phụ theo hàng ngang */
+    max-height: 100px; /* Giới hạn chiều cao của ảnh phụ */
+    margin-top: 10px; /* Khoảng cách giữa ảnh chính và ảnh phụ */
+}
+
+    .additional-images .thumbnail-wrapper {
+        max-height: 100px; /* Giới hạn chiều cao của ảnh phụ */
+        margin-right: 5px; /* Khoảng cách giữa các ảnh phụ */
+        cursor: pointer; /* Hiển thị con trỏ chuột để chỉ ra rằng đây là một nút bấm */
+        transition: transform 0.2s ease;
+    }
+
+        .additional-images .thumbnail-wrapper:hover img {
+            transform: scale(1.05); /* Hiệu ứng phóng to khi hover */
+            transition: transform 0.2s ease;
+        }
+
+#departure-calendar {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom calendar styling */
+.calendar-header {
+    font-weight: bold;
+}
+
+.calendar .table {
+    margin-bottom: 0;
+    border: 1px solid #ddd;
+}
+
+    .calendar .table th, .calendar .table td {
+        vertical-align: middle;
+        padding: 10px;
+        height: 80px;
+        width: 80px;
+        text-align: center;
+    }
+
+.calendar .bg-light {
+    background-color: #f9f9f9 !important;
+}
+
+.calendar .badge {
+    font-size: 16px;
+    padding: 5px 10px;
+}
+
+/* Modal button styling */
+.btn-primary {
+    background-color: #007BFF;
+    border-color: #007BFF;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: white;
+    }
+
+/* Modal styling */
+.modal .modal-header {
+    border-bottom: none;
+}
+
+.modal .modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.modal .modal-footer {
+    border-top: none;
+}
+
+/* Departure date buttons */
+.calendar .btn-light {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ccc;
+    transition: all 0.2s ease;
+}
+
+    .calendar .btn-light:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+.calendar .btn-secondary {
+    background-color: #ccc;
+    border: none;
+}
+
+/* Tour card styling */
+.tour-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+}
+
+    .tour-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .tour-card h4 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #007bff; /* Tô màu xanh đậm cho tên tour */
+        margin-bottom: 10px;
+    }
+
+    .tour-card p {
+        font-size: 16px;
+        color: #34495e;
+    }
+
+/* Services list styling */
+.services h5 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.services ul {
+    padding-left: 20px;
+}
+
+    .services ul li {
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+/* Price styling */
+.price {
+    color: #e74c3c; /* Màu đỏ cho giá */
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tour-card {
+        text-align: center;
+    }
+
+        .tour-card img {
+            width: 100%;
+            height: auto;
+        }
+
+    .additional-images {
+        justify-content: center;
+    }
+
+        .additional-images .thumbnail-wrapper {
+            margin-right: 10px;
+        }
+}

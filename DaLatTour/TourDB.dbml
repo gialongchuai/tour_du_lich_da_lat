@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DB_TourDuLich" Class="TourDBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.TourComboDeparture" Member="TourComboDepartures">
+    <Type Name="TourComboDeparture">
+      <Column Name="departure_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="combo_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="departure_date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="available_slots" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="TourCombo_TourComboDeparture" Member="TourCombo" ThisKey="combo_id" OtherKey="combo_id" Type="TourCombo" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Chat_Support" Member="Chat_Supports">
+    <Type Name="Chat_Support">
+      <Column Name="chat_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="staff_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="message" Type="System.String" DbType="Text NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="message_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Customer_Chat_Support" Member="Customer" ThisKey="customer_id" OtherKey="customer_id" Type="Customer" IsForeignKey="true" />
+      <Association Name="Staff_Chat_Support" Member="Staff" ThisKey="staff_id" OtherKey="staff_id" Type="Staff" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Customer" Member="Customers">
+    <Type Name="Customer">
+      <Column Name="customer_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="phone" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="false" />
+      <Column Name="username" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="address" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="dob" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Customer_Chat_Support" Member="Chat_Supports" ThisKey="customer_id" OtherKey="customer_id" Type="Chat_Support" />
+      <Association Name="Customer_Booking" Member="Bookings" ThisKey="customer_id" OtherKey="customer_id" Type="Booking" />
+      <Association Name="Customer_Tour_Review" Member="Tour_Reviews" ThisKey="customer_id" OtherKey="customer_id" Type="Tour_Review" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Hotel" Member="Hotels">
+    <Type Name="Hotel">
+      <Column Name="hotel_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="hotel_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="price_per_night" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="location" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Hotel_TourCombo" Member="TourCombos" ThisKey="hotel_id" OtherKey="hotel_id" Type="TourCombo" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ImgList" Member="ImgLists">
+    <Type Name="ImgList">
+      <Column Name="img_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="combo_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="img_url" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="TourCombo_ImgList" Member="TourCombo" ThisKey="combo_id" OtherKey="combo_id" Type="TourCombo" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Invoice" Member="Invoices">
+    <Type Name="Invoice">
+      <Column Name="invoice_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="booking_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="invoice_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="total_amount" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="payment_method" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="payment_status" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="Invoice_Invoice_Detail" Member="Invoice_Details" ThisKey="invoice_id" OtherKey="invoice_id" Type="Invoice_Detail" />
+      <Association Name="Booking_Invoice" Member="Booking" ThisKey="booking_id" OtherKey="booking_id" Type="Booking" IsForeignKey="true" />
+      <Association Name="Booking_Invoice1" Member="Booking1" ThisKey="booking_id" OtherKey="booking_id" Type="Booking" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Invoice_Detail" Member="Invoice_Details">
+    <Type Name="Invoice_Detail">
+      <Column Name="invoice_detail_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="invoice_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="amount" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Association Name="Invoice_Invoice_Detail" Member="Invoice" ThisKey="invoice_id" OtherKey="invoice_id" Type="Invoice" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Promotion" Member="Promotions">
+    <Type Name="Promotion">
+      <Column Name="promotion_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="discount_percentage" Type="System.Decimal" DbType="Decimal(5,2) NOT NULL" CanBeNull="false" />
+      <Column Name="start_date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="end_date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Restaurant" Member="Restaurants">
+    <Type Name="Restaurant">
+      <Column Name="restaurant_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="restaurant_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="location" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="price_range" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Restaurant_TourCombo" Member="TourCombos" ThisKey="restaurant_id" OtherKey="restaurant_id" Type="TourCombo" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Staff" Member="Staffs">
+    <Type Name="Staff">
+      <Column Name="staff_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="phone" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Column Name="role" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Staff_Chat_Support" Member="Chat_Supports" ThisKey="staff_id" OtherKey="staff_id" Type="Chat_Support" />
+      <Association Name="Staff_Booking" Member="Bookings" ThisKey="staff_id" OtherKey="staff_id" Type="Booking" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Tour" Member="Tours">
+    <Type Name="Tour">
+      <Column Name="tour_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="tour_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="tour_image" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(10,0) NOT NULL" CanBeNull="false" />
+      <Column Name="duration" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="travelby" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="available_slots" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="average_rating" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Association Name="Tour_Tour_Detail" Member="Tour_Details" ThisKey="tour_id" OtherKey="tour_id" Type="Tour_Detail" />
+      <Association Name="Tour_Booking" Member="Bookings" ThisKey="tour_id" OtherKey="tour_id" Type="Booking" />
+      <Association Name="Tour_Booking1" Member="Bookings1" ThisKey="tour_id" OtherKey="tour_id" Type="Booking" />
+      <Association Name="Tour_Tour_Review" Member="Tour_Reviews" ThisKey="tour_id" OtherKey="tour_id" Type="Tour_Review" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Tour_Detail" Member="Tour_Details">
+    <Type Name="Tour_Detail">
+      <Column Name="tour_detail_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="tour_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="image_url" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="num_people" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="departure_date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="return_date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="daily_activities" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Tour_Tour_Detail" Member="Tour" ThisKey="tour_id" OtherKey="tour_id" Type="Tour" IsForeignKey="true" DeleteRule="CASCADE" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Tour_Services" Member="Tour_Services">
+    <Type Name="Tour_Service">
+      <Column Name="service_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="service_name" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Association Name="Tour_Service_TourCombo_Service" Member="TourCombo_Services" ThisKey="service_id" OtherKey="service_id" Type="TourCombo_Service" />
+      <Association Name="Tour_Service_WishlistService" Member="WishlistServices" ThisKey="service_id" OtherKey="service_id" Type="WishlistService" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TourCombo" Member="TourCombos">
+    <Type Name="TourCombo">
+      <Column Name="combo_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="combo_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="hotel_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="restaurant_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="img_url" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="TourCombo_TourComboDeparture" Member="TourComboDepartures" ThisKey="combo_id" OtherKey="combo_id" Type="TourComboDeparture" />
+      <Association Name="TourCombo_ImgList" Member="ImgLists" ThisKey="combo_id" OtherKey="combo_id" Type="ImgList" />
+      <Association Name="TourCombo_TourCombo_Service" Member="TourCombo_Services" ThisKey="combo_id" OtherKey="combo_id" Type="TourCombo_Service" />
+      <Association Name="TourCombo_Booking" Member="Bookings" ThisKey="combo_id" OtherKey="combo_id" Type="Booking" />
+      <Association Name="TourCombo_Tour_Review" Member="Tour_Reviews" ThisKey="combo_id" OtherKey="combo_id" Type="Tour_Review" />
+      <Association Name="Hotel_TourCombo" Member="Hotel" ThisKey="hotel_id" OtherKey="hotel_id" Type="Hotel" IsForeignKey="true" />
+      <Association Name="Restaurant_TourCombo" Member="Restaurant" ThisKey="restaurant_id" OtherKey="restaurant_id" Type="Restaurant" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TourCombo_Services" Member="TourCombo_Services">
+    <Type Name="TourCombo_Service">
+      <Column Name="tourcombo_service_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="combo_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="service_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="TourCombo_TourCombo_Service" Member="TourCombo" ThisKey="combo_id" OtherKey="combo_id" Type="TourCombo" IsForeignKey="true" />
+      <Association Name="Tour_Service_TourCombo_Service" Member="Tour_Service" ThisKey="service_id" OtherKey="service_id" Type="Tour_Service" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.WishlistServices" Member="WishlistServices">
+    <Type Name="WishlistService">
+      <Column Name="wishlist_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="service_id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="Tour_Service_WishlistService" Member="Tour_Service" ThisKey="service_id" OtherKey="service_id" Type="Tour_Service" IsForeignKey="true" />
+      <Association Name="TourWishlist_WishlistService" Member="TourWishlist" ThisKey="wishlist_id" OtherKey="wishlist_id" Type="TourWishlist" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TourWishlist" Member="TourWishlists">
+    <Type Name="TourWishlist">
+      <Column Name="wishlist_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="wishlist_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="hotel_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="restaurant_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="img_url" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="TourWishlist_WishlistService" Member="WishlistServices" ThisKey="wishlist_id" OtherKey="wishlist_id" Type="WishlistService" />
+      <Association Name="TourWishlist_WishlistDeparture" Member="WishlistDepartures" ThisKey="wishlist_id" OtherKey="wishlist_id" Type="WishlistDeparture" />
+      <Association Name="TourWishlist_Booking" Member="Bookings" ThisKey="wishlist_id" OtherKey="wishlist_id" Type="Booking" />
+    </Type>
+  </Table>
+  <Table Name="dbo.WishlistDeparture" Member="WishlistDepartures">
+    <Type Name="WishlistDeparture">
+      <Column Name="departure_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="wishlist_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="departure_date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="price" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="available_slots" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="TourWishlist_WishlistDeparture" Member="TourWishlist" ThisKey="wishlist_id" OtherKey="wishlist_id" Type="TourWishlist" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Booking" Member="Bookings">
+    <Type Name="Booking">
+      <Column Name="booking_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="customer_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="tour_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="combo_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="wishlist_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="staff_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="booking_date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="total_price" Type="System.Decimal" DbType="Decimal(10,2) NOT NULL" CanBeNull="false" />
+      <Column Name="num_people" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="booking_status" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="special_requests" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="departure_date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="IsReview" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Association Name="Booking_Invoice" Member="Invoices" ThisKey="booking_id" OtherKey="booking_id" Type="Invoice" />
+      <Association Name="Booking_Invoice1" Member="Invoices1" ThisKey="booking_id" OtherKey="booking_id" Type="Invoice" />
+      <Association Name="TourCombo_Booking" Member="TourCombo" ThisKey="combo_id" OtherKey="combo_id" Type="TourCombo" IsForeignKey="true" />
+      <Association Name="Customer_Booking" Member="Customer" ThisKey="customer_id" OtherKey="customer_id" Type="Customer" IsForeignKey="true" />
+      <Association Name="Staff_Booking" Member="Staff" ThisKey="staff_id" OtherKey="staff_id" Type="Staff" IsForeignKey="true" />
+      <Association Name="Tour_Booking" Member="Tour" ThisKey="tour_id" OtherKey="tour_id" Type="Tour" IsForeignKey="true" />
+      <Association Name="TourWishlist_Booking" Member="TourWishlist" ThisKey="wishlist_id" OtherKey="wishlist_id" Type="TourWishlist" IsForeignKey="true" />
+      <Association Name="Tour_Booking1" Member="Tour1" ThisKey="tour_id" OtherKey="tour_id" Type="Tour" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Tour_Review" Member="Tour_Reviews">
+    <Type Name="Tour_Review">
+      <Column Name="review_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="customer_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="tour_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="combo_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="review_text" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="rating" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="review_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="TourCombo_Tour_Review" Member="TourCombo" ThisKey="combo_id" OtherKey="combo_id" Type="TourCombo" IsForeignKey="true" />
+      <Association Name="Customer_Tour_Review" Member="Customer" ThisKey="customer_id" OtherKey="customer_id" Type="Customer" IsForeignKey="true" />
+      <Association Name="Tour_Tour_Review" Member="Tour" ThisKey="tour_id" OtherKey="tour_id" Type="Tour" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
